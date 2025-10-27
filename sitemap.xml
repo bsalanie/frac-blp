@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://bsalanie.github.io/frac-blp/index.html</loc>
+         <lastmod>2025-10-27</lastmod>
+    </url>
+    <url>
+         <loc>https://bsalanie.github.io/frac-blp/artificial_regressors.html</loc>
+         <lastmod>2025-10-27</lastmod>
+    </url>
+    <url>
+         <loc>https://bsalanie.github.io/frac-blp/example_frac_nodemog.html</loc>
+         <lastmod>2025-10-27</lastmod>
+    </url>
+    <url>
+         <loc>https://bsalanie.github.io/frac-blp/frac_classes.html</loc>
+         <lastmod>2025-10-27</lastmod>
+    </url>
+    <url>
+         <loc>https://bsalanie.github.io/frac-blp/frac_nodemog.html</loc>
+         <lastmod>2025-10-27</lastmod>
+    </url>
+    <url>
+         <loc>https://bsalanie.github.io/frac-blp/frac_utils.html</loc>
+         <lastmod>2025-10-27</lastmod>
+    </url>
+    <url>
+         <loc>https://bsalanie.github.io/frac-blp/simulate_frac_nodemog_data.html</loc>
+         <lastmod>2025-10-27</lastmod>
+    </url>
+</urlset>
