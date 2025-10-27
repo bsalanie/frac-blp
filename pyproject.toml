@@ -1,0 +1,17 @@
+[project]
+name = "frac-blp"
+version = "0.1.0"
+description = "FRAC estimation for macro-BLP models"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy",
+    "scipy",
+    "bs_python_utils"
+]
+
+[tool.setuptools]
+packages = ["frac_blp", "frac_blp.examples"]
+
+[tool.setuptools.package-data]
+"frac_blp" = ["examples/*.py"]
