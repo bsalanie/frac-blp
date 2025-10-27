@@ -12,6 +12,25 @@
 - **Github repository**: <https://github.com/bsalanie/frac-blp/>
 - **Documentation** <https://bsalanie.github.io/frac-blp/>
 
+### Overview
+The package estimates a second-order approximation to the macro BLP model with random coefficients using the FRAC method of Salanie and Wolak. 
+
+The user should be familiar with the macro BLP model (Berry, Levinsohn, and Pakes, 1995). We use very similar notation to that of Conlon and Gortmaker in their `pyblp` package:
+
+The inputs are:
+* `T`: the number of markets 
+* `J`: the number of products per market
+* `X1`: variables with fixed coefficients, an `(N=T*J, n1)` matrix
+* `X2`: variables with random coefficients, an `(N, n2)` matrix
+* `Z`: instruments, an `(N, nz)` matrix.
+
+The outputs are:
+* `betas`: the coefficients on the variables with fixed coefficients and the mean coefficients on the variables with random coefficients, an `(n1 + n2)` vector
+* `sigmas`: the standard deviations of the coefficients on the variables with random coefficients, an `n2` vector.
+
+#### entering the data
+
+
 ### Release notes
 
 #### 0.1 (October 26, 2025)

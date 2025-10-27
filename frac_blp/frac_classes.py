@@ -22,8 +22,6 @@ class FracNoDemogRealData:
     Z: np.ndarray
     names_vars_beta: list[str]
     names_vars_sigma: list[str]
-    betas: np.ndarray
-    sigmas: np.ndarray
     shares: np.ndarray
 
     X1: np.ndarray = field(init=False)
@@ -38,12 +36,12 @@ class FracNoDemogRealData:
 
     def __str__(self) -> str:
         """
-        Return a text summary of the simulated dataset.
+        Return a text summary of the observed dataset.
 
         Returns:
             str: Multi-line description with key parameters.
         """
-        desc = "Simulated Data for FRAC w/o demographics:\n"
+        desc = "Observed Data for FRAC w/o demographics:\n"
         desc += f"  Number of markets (T): {self.T}\n"
         desc += f"  Products per market (J): {self.J}\n"
         desc += (
@@ -52,8 +50,6 @@ class FracNoDemogRealData:
         desc += (
             f"  Names of variables with random coefficients: {self.names_vars_sigma}\n"
         )
-        desc += f"  Betas: {self.betas}\n"
-        desc += f"  Sigmas: {self.sigmas}\n"
         return desc
 
 
