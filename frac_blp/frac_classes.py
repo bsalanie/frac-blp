@@ -35,7 +35,6 @@ class FracNoDemogRealData:
         self.n_obs = self.T * self.J
         self.X1 = make_X(self.X1_exo, self.X1_endo)
         self.X2 = make_X(self.X2_exo, self.X2_endo)
-    
 
     def __str__(self) -> str:
         """
