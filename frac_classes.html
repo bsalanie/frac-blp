@@ -892,11 +892,7 @@
 <span class="normal">50</span>
 <span class="normal">51</span>
 <span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="normal">53</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">FracNoDemogRealData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Container for real FRAC data without demographics.&quot;&quot;&quot;</span>
 
@@ -909,8 +905,6 @@
     <span class="n">Z</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
     <span class="n">names_vars_beta</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">names_vars_sigma</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="n">betas</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
-    <span class="n">sigmas</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
     <span class="n">shares</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
 
     <span class="n">X1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -925,12 +919,12 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return a text summary of the simulated dataset.</span>
+<span class="sd">        Return a text summary of the observed dataset.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: Multi-line description with key parameters.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">desc</span> <span class="o">=</span> <span class="s2">&quot;Simulated Data for FRAC w/o demographics:</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">desc</span> <span class="o">=</span> <span class="s2">&quot;Observed Data for FRAC w/o demographics:</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">desc</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;  Number of markets (T): </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">desc</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;  Products per market (J): </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">J</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">desc</span> <span class="o">+=</span> <span class="p">(</span>
@@ -939,8 +933,6 @@
         <span class="n">desc</span> <span class="o">+=</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;  Names of variables with random coefficients: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">names_vars_sigma</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span>
-        <span class="n">desc</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;  Betas: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">betas</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="n">desc</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;  Sigmas: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sigmas</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="n">desc</span>
 </code></pre></div></td></tr></table></div>
               </details>
@@ -974,11 +966,11 @@
 
             <details class="quote">
               <summary>Source code in <code>frac_blp/frac_classes.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">33</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
 <span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">35</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute derived attributes once inputs are provided.&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">n_obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">J</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">X1</span> <span class="o">=</span> <span class="n">make_X</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X1_exo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X1_endo</span><span class="p">)</span>
@@ -1000,7 +992,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>Return a text summary of the simulated dataset.</p>
+        <p>Return a text summary of the observed dataset.</p>
 
 
     <p><span class="doc-section-title">Returns:</span></p>
@@ -1028,7 +1020,9 @@
 
             <details class="quote">
               <summary>Source code in <code>frac_blp/frac_classes.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">39</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
 <span class="normal">40</span>
 <span class="normal">41</span>
 <span class="normal">42</span>
@@ -1042,18 +1036,14 @@
 <span class="normal">50</span>
 <span class="normal">51</span>
 <span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">53</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Return a text summary of the simulated dataset.</span>
+<span class="sd">    Return a text summary of the observed dataset.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        str: Multi-line description with key parameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">desc</span> <span class="o">=</span> <span class="s2">&quot;Simulated Data for FRAC w/o demographics:</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">desc</span> <span class="o">=</span> <span class="s2">&quot;Observed Data for FRAC w/o demographics:</span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="n">desc</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;  Number of markets (T): </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="n">desc</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;  Products per market (J): </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">J</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="n">desc</span> <span class="o">+=</span> <span class="p">(</span>
@@ -1062,8 +1052,6 @@
     <span class="n">desc</span> <span class="o">+=</span> <span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;  Names of variables with random coefficients: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">names_vars_sigma</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="p">)</span>
-    <span class="n">desc</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;  Betas: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">betas</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-    <span class="n">desc</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;  Sigmas: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sigmas</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="k">return</span> <span class="n">desc</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1108,7 +1096,11 @@
 
               <details class="quote">
                 <summary>Source code in <code>frac_blp/frac_classes.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 60</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
 <span class="normal"> 61</span>
 <span class="normal"> 62</span>
 <span class="normal"> 63</span>
@@ -1194,11 +1186,7 @@
 <span class="normal">143</span>
 <span class="normal">144</span>
 <span class="normal">145</span>
-<span class="normal">146</span>
-<span class="normal">147</span>
-<span class="normal">148</span>
-<span class="normal">149</span>
-<span class="normal">150</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="normal">146</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">FracNoDemogSimulatedData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Container for simulated FRAC data without demographics.&quot;&quot;&quot;</span>
 
@@ -1321,12 +1309,12 @@
 
             <details class="quote">
               <summary>Source code in <code>frac_blp/frac_classes.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">82</span>
-<span class="normal">83</span>
-<span class="normal">84</span>
-<span class="normal">85</span>
-<span class="normal">86</span>
-<span class="normal">87</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Populate derived arrays and simulate shares.&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">n_obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">J</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">X1</span> <span class="o">=</span> <span class="n">make_X</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X1_exo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X1_endo</span><span class="p">)</span>
@@ -1377,7 +1365,11 @@
 
             <details class="quote">
               <summary>Source code in <code>frac_blp/frac_classes.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">132</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
 <span class="normal">133</span>
 <span class="normal">134</span>
 <span class="normal">135</span>
@@ -1391,11 +1383,7 @@
 <span class="normal">143</span>
 <span class="normal">144</span>
 <span class="normal">145</span>
-<span class="normal">146</span>
-<span class="normal">147</span>
-<span class="normal">148</span>
-<span class="normal">149</span>
-<span class="normal">150</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">146</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a text summary of the simulated dataset.</span>
 
@@ -1459,7 +1447,11 @@
 
             <details class="quote">
               <summary>Source code in <code>frac_blp/frac_classes.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 89</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
 <span class="normal"> 90</span>
 <span class="normal"> 91</span>
 <span class="normal"> 92</span>
@@ -1496,11 +1488,7 @@
 <span class="normal">123</span>
 <span class="normal">124</span>
 <span class="normal">125</span>
-<span class="normal">126</span>
-<span class="normal">127</span>
-<span class="normal">128</span>
-<span class="normal">129</span>
-<span class="normal">130</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">compute_shares</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="normal">126</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">compute_shares</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simulate market shares via sparse Gaussian quadrature.</span>
 

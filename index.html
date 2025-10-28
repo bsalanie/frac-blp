@@ -379,6 +379,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#entering-the-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      entering the data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#release-notes" class="md-nav__link">
     <span class="md-ellipsis">
       Release notes
@@ -624,6 +648,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#entering-the-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      entering the data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#release-notes" class="md-nav__link">
     <span class="md-ellipsis">
       Release notes
@@ -671,18 +719,70 @@
 
 [![Release](https://img.shields.io/github/v/release/bsalanie/frac-blp)](https://img.shields.io/github/v/release/bsalanie/frac-blp)
 
-[![Build status](https://img.shields.io/github/actions/workflow/status/bsalanie/frac-blp/main.yml?branch=main)](https://github.com/bsalanie/frac-blp/actions/workflows/main.yml?query=branch%3Amain) <!-- [![codecov](https://codecov.io/gh/bsalanie/frac-blp/branch/main/graph/badge.svg)](https://codecov.io/gh/bsalanie/frac-blp) -->
-<p><a href="https://img.shields.io/github/license/bsalanie/frac-blp"><img alt="License" src="https://img.shields.io/github/license/bsalanie/frac-blp" /></a>
---&gt;</p>
+[![Build status](https://img.shields.io/github/actions/workflow/status/bsalanie/frac-blp/main.yml?branch=main)](https://github.com/bsalanie/frac-blp/actions/workflows/main.yml?query=branch%3Amain) <!-- [![codecov](https://codecov.io/gh/bsalanie/frac-blp/branch/main/graph/badge.svg)](https://codecov.io/gh/bsalanie/frac-blp) 
+
+ [![Commit activity](https://img.shields.io/github/commit-activity/m/bsalanie/frac-blp)](https://img.shields.io/github/commit-activity/m/bsalanie/frac-blp) [![License](https://img.shields.io/github/license/bsalanie/frac-blp)](https://img.shields.io/github/license/bsalanie/frac-blp)
+-->
+
 <p><strong>FRAC for macro-BLP (Salanie-Wolak)</strong>.</p>
 <ul>
 <li><strong>Github repository</strong>: <a href="https://github.com/bsalanie/frac-blp/">https://github.com/bsalanie/frac-blp/</a></li>
 <li><strong>Documentation</strong> <a href="https://bsalanie.github.io/frac-blp/">https://bsalanie.github.io/frac-blp/</a></li>
 </ul>
+<h3 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h3>
+<p>The package estimates a second-order approximation to the macro BLP model with random coefficients using the FRAC method of Salanie and Wolak. </p>
+<p>At this early stage, the package only implements the basic version of the model without demographics. </p>
+<p>The user should be familiar with the macro BLP model (Berry, Levinsohn, and Pakes, 1995). We use very similar notation to that of Conlon and Gortmaker in their <code>pyblp</code> package:</p>
+<p>The inputs are:
+* <code>T</code>: the number of markets 
+* <code>J</code>: the number of products per market
+* <code>X1</code>: variables with fixed coefficients, an <code>(N=T*J, n1)</code> matrix
+* <code>X2</code>: variables with random coefficients, an <code>(N, n2)</code> matrix
+* <code>Z</code>: instruments, an <code>(N, nz)</code> matrix.</p>
+<p>The outputs are:
+* <code>betas</code>: the coefficients on the variables with fixed coefficients and the mean coefficients on the variables with random coefficients, an <code>(n1 + n2)</code> vector
+* <code>sigmas</code>: the standard deviations of the coefficients on the variables with random coefficients, an <code>n2</code> vector.</p>
+<h4 id="entering-the-data">entering the data<a class="headerlink" href="#entering-the-data" title="Permanent link">&para;</a></h4>
+<p>The user must provide the data as numpy arrays with <code>T*J</code> rows:</p>
+<ul>
+<li>
+<p><code>X1_exo, X1_endo, X2_exo, X2_endo</code>: matrices of exogenous and endogenous variables with fixed and random coefficients</p>
+</li>
+<li>
+<p><code>Z</code>: matrix of instruments</p>
+</li>
+<li>
+<p><code>shares</code>: vector of market shares.</p>
+</li>
+</ul>
+<p>The observations should be ordered by market, i.e., the first <code>J</code> rows correspond to market 1, the next <code>J</code> rows to market 2, etc.</p>
+<p>These are entered in the model as follows:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">rom</span> <span class="n">frac</span> <span class="n">blp</span><span class="o">.</span><span class="n">frac</span> <span class="n">classes</span> <span class="kn">import</span><span class="w"> </span><span class="nn">FracNodemogRealData</span>
+
+<span class="n">frac</span> <span class="n">data</span> <span class="o">=</span> <span class="n">FracNodemogRealData</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span>
+                            <span class="n">X1_exo</span><span class="p">,</span> <span class="n">X1_endo</span><span class="p">,</span>
+                            <span class="n">X2_exo</span><span class="p">,</span> <span class="n">X2_endo</span><span class="p">,</span>
+                            <span class="n">Z</span><span class="p">,</span> <span class="n">shares</span><span class="p">,</span>
+                            <span class="n">names_vars_beta</span><span class="p">,</span>
+                            <span class="n">names_vars_sigma</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+Then the model can be estimated with:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">frac_blp.frac_nodemog</span><span class="w"> </span><span class="kn">import</span> <span class="n">estimate</span>
+
+<span class="n">betabar</span><span class="p">,</span> <span class="n">sigmas</span> <span class="o">=</span> <span class="n">frac</span> <span class="n">nodemog</span> <span class="n">estimate</span><span class="p">(</span><span class="n">frac</span> <span class="n">data</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div></p>
 <h3 id="release-notes">Release notes<a class="headerlink" href="#release-notes" title="Permanent link">&para;</a></h3>
 <h4 id="01-october-26-2025">0.1 (October 26, 2025)<a class="headerlink" href="#01-october-26-2025" title="Permanent link">&para;</a></h4>
 <p>First working version, no demographics.</p>
-<!-- [![Commit activity](https://img.shields.io/github/commit-activity/m/bsalanie/frac-blp)](https://img.shields.io/github/commit-activity/m/bsalanie/frac-blp) -->
 
 
 
