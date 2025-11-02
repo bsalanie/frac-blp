@@ -891,7 +891,7 @@
 
 
 <h2 id="frac_blp.frac_utils.make_Z_full" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">make_Z_full</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">X1_exo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">X2_exo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degree_Z</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">degree_X1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">degree_X2</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">make_Z_full</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">X1_exo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degree_Z</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">degree_X1</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></code>
 
 <a href="#frac_blp.frac_utils.make_Z_full" class="headerlink" title="Permanent link">&para;</a></h2>
 
@@ -946,22 +946,6 @@
           </tr>
           <tr class="doc-section-item">
             <td>
-                <code>X2_exo</code>
-            </td>
-            <td>
-                  <code><span title="numpy.ndarray">ndarray</span> | None</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Exogenous regressors with random coefficients.</p>
-              </div>
-            </td>
-            <td>
-                  <code>None</code>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
                 <code>degree_Z</code>
             </td>
             <td>
@@ -973,7 +957,7 @@
               </div>
             </td>
             <td>
-                  <code>1</code>
+                  <code>2</code>
             </td>
           </tr>
           <tr class="doc-section-item">
@@ -989,23 +973,7 @@
               </div>
             </td>
             <td>
-                  <code>0</code>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>degree_X2</code>
-            </td>
-            <td>
-                  <code><span title="int">int</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Maximum degree applied to columns of <code>X2_exo</code>.</p>
-              </div>
-            </td>
-            <td>
-                  <code>0</code>
+                  <code>2</code>
             </td>
           </tr>
       </tbody>
@@ -1121,27 +1089,11 @@
 <span class="normal">80</span>
 <span class="normal">81</span>
 <span class="normal">82</span>
-<span class="normal">83</span>
-<span class="normal">84</span>
-<span class="normal">85</span>
-<span class="normal">86</span>
-<span class="normal">87</span>
-<span class="normal">88</span>
-<span class="normal">89</span>
-<span class="normal">90</span>
-<span class="normal">91</span>
-<span class="normal">92</span>
-<span class="normal">93</span>
-<span class="normal">94</span>
-<span class="normal">95</span>
-<span class="normal">96</span>
-<span class="normal">97</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">make_Z_full</span><span class="p">(</span>
+<span class="normal">83</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">make_Z_full</span><span class="p">(</span>
     <span class="n">Z</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="n">X1_exo</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">X2_exo</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">degree_Z</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="n">degree_X1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">degree_X2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">degree_Z</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">degree_X1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Build a full set of polynomial instruments for FRAC without demographics.</span>
@@ -1149,10 +1101,8 @@
 <span class="sd">    Args:</span>
 <span class="sd">        Z (np.ndarray): Baseline instruments.</span>
 <span class="sd">        X1_exo (np.ndarray | None): Exogenous regressors without random coefficients.</span>
-<span class="sd">        X2_exo (np.ndarray | None): Exogenous regressors with random coefficients.</span>
 <span class="sd">        degree_Z (int): Maximum degree applied to columns of ``Z`` (must be &gt;= 0).</span>
 <span class="sd">        degree_X1 (int): Maximum degree applied to columns of ``X1_exo``.</span>
-<span class="sd">        degree_X2 (int): Maximum degree applied to columns of ``X2_exo``.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        np.ndarray: Instrument matrix whose columns enumerate every admissible</span>
@@ -1168,37 +1118,27 @@
     <span class="n">columns</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_obs</span><span class="p">)]</span>
 
     <span class="n">n_x1</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">X1_exo</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">X1_exo</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">n_x2</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">X2_exo</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">X2_exo</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-
     <span class="n">max_dx1</span> <span class="o">=</span> <span class="n">degree_X1</span> <span class="k">if</span> <span class="n">X1_exo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">0</span>
-    <span class="n">max_dx2</span> <span class="o">=</span> <span class="n">degree_X2</span> <span class="k">if</span> <span class="n">X2_exo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">0</span>
 
     <span class="k">for</span> <span class="n">d_z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">degree_Z</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
         <span class="n">z_indices</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="k">if</span> <span class="n">d_z</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_z</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">iz</span> <span class="ow">in</span> <span class="n">z_indices</span><span class="p">:</span>
             <span class="n">base_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_obs</span><span class="p">)</span> <span class="k">if</span> <span class="n">iz</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">Z</span><span class="p">[:,</span> <span class="n">iz</span><span class="p">]</span> <span class="o">**</span> <span class="n">d_z</span>
+            <span class="c1"># str_base_z = &quot; &quot; if iz is None else f&quot;Z[:, {iz}] ** {d_z} &quot;</span>
 
             <span class="k">for</span> <span class="n">d_x1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_dx1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="n">x1_indices</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="k">if</span> <span class="n">d_x1</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_x1</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">ix1</span> <span class="ow">in</span> <span class="n">x1_indices</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">ix1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">term_x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_obs</span><span class="p">)</span>
+                        <span class="c1"># str_X1 = &quot;1 &quot;</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">assert</span> <span class="n">X1_exo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
                         <span class="n">term_x1</span> <span class="o">=</span> <span class="n">X1_exo</span><span class="p">[:,</span> <span class="n">ix1</span><span class="p">]</span> <span class="o">**</span> <span class="n">d_x1</span>
-
-                    <span class="k">for</span> <span class="n">d_x2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_dx2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-                        <span class="n">x2_indices</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="k">if</span> <span class="n">d_x2</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_x2</span><span class="p">)</span>
-                        <span class="k">for</span> <span class="n">ix2</span> <span class="ow">in</span> <span class="n">x2_indices</span><span class="p">:</span>
-                            <span class="k">if</span> <span class="n">d_z</span> <span class="o">==</span> <span class="n">d_x1</span> <span class="o">==</span> <span class="n">d_x2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                                <span class="k">continue</span>  <span class="c1"># ones already included</span>
-
-                            <span class="k">if</span> <span class="n">ix2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                                <span class="n">term_x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_obs</span><span class="p">)</span>
-                            <span class="k">else</span><span class="p">:</span>
-                                <span class="k">assert</span> <span class="n">X2_exo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                                <span class="n">term_x2</span> <span class="o">=</span> <span class="n">X2_exo</span><span class="p">[:,</span> <span class="n">ix2</span><span class="p">]</span> <span class="o">**</span> <span class="n">d_x2</span>
-                            <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base_z</span> <span class="o">*</span> <span class="n">term_x1</span> <span class="o">*</span> <span class="n">term_x2</span><span class="p">)</span>
+                        <span class="c1"># str_X1 = f&quot;X1_exo[:, {ix1}] ** {d_x1} &quot;</span>
+                    <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base_z</span> <span class="o">*</span> <span class="n">term_x1</span><span class="p">)</span>
+                    <span class="c1"># print(f&quot;{iz=}, {d_z=}, {ix1=}, {d_x1=}&quot;)</span>
+                    <span class="c1"># print(&quot;    &quot; + str_base_z + &quot; * &quot; + str_X1)</span>
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -1313,7 +1253,21 @@
 
             <details class="quote">
               <summary>Source code in <code>frac_blp/frac_utils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">100</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
 <span class="normal">101</span>
 <span class="normal">102</span>
 <span class="normal">103</span>
@@ -1327,21 +1281,7 @@
 <span class="normal">111</span>
 <span class="normal">112</span>
 <span class="normal">113</span>
-<span class="normal">114</span>
-<span class="normal">115</span>
-<span class="normal">116</span>
-<span class="normal">117</span>
-<span class="normal">118</span>
-<span class="normal">119</span>
-<span class="normal">120</span>
-<span class="normal">121</span>
-<span class="normal">122</span>
-<span class="normal">123</span>
-<span class="normal">124</span>
-<span class="normal">125</span>
-<span class="normal">126</span>
-<span class="normal">127</span>
-<span class="normal">128</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">proj_Z_full</span><span class="p">(</span>
+<span class="normal">114</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">proj_Z_full</span><span class="p">(</span>
     <span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Z_full</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>

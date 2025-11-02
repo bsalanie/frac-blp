@@ -695,7 +695,7 @@
 
 
 <h2 id="frac_blp.frac_nodemog.frac_nodemog_estimate" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">frac_nodemog_estimate</span><span class="p">(</span><span class="n">frac_data</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">frac_nodemog_estimate</span><span class="p">(</span><span class="n">frac_data</span><span class="p">,</span> <span class="n">degree_Z</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">degree_X1</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></code>
 
 <a href="#frac_blp.frac_nodemog.frac_nodemog_estimate" class="headerlink" title="Permanent link">&para;</a></h2>
 
@@ -731,6 +731,39 @@ simulated or empirical shares.</p>
             </td>
             <td>
                 <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>degree_Z</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Degree of polynomial expansion for instruments. Default is 2.</p>
+              </div>
+            </td>
+            <td>
+                  <code>2</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>degree_X1</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Degree of polynomial expansion for exogenous regressors in X1.
+Default is 2.</p>
+              </div>
+            </td>
+            <td>
+                  <code>2</code>
             </td>
           </tr>
       </tbody>
@@ -831,8 +864,13 @@ simulated or empirical shares.</p>
 <span class="normal">72</span>
 <span class="normal">73</span>
 <span class="normal">74</span>
-<span class="normal">75</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">frac_nodemog_estimate</span><span class="p">(</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">frac_nodemog_estimate</span><span class="p">(</span>
     <span class="n">frac_data</span><span class="p">:</span> <span class="n">FracNoDemogData</span><span class="p">,</span>
+    <span class="n">degree_Z</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">degree_X1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TwoArrays</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Estimate FRAC parameters without demographics using two-stage least squares.</span>
@@ -840,13 +878,15 @@ simulated or empirical shares.</p>
 <span class="sd">    Args:</span>
 <span class="sd">        frac_data (FracNoDemogData): Data container with regressors, instruments, and</span>
 <span class="sd">            simulated or empirical shares.</span>
+<span class="sd">        degree_Z (int): Degree of polynomial expansion for instruments. Default is 2.</span>
+<span class="sd">        degree_X1 (int): Degree of polynomial expansion for exogenous regressors in X1.</span>
+<span class="sd">            Default is 2.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        TwoArrays: Tuple ``(betas_est, sigmas_est)`` with fixed and random coefficient</span>
 <span class="sd">        estimates, respectively.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">X1_exo</span> <span class="o">=</span> <span class="n">frac_data</span><span class="o">.</span><span class="n">X1_exo</span>
-    <span class="n">X2_exo</span> <span class="o">=</span> <span class="n">frac_data</span><span class="o">.</span><span class="n">X2_exo</span>
     <span class="n">X1</span><span class="p">,</span> <span class="n">X2</span> <span class="o">=</span> <span class="n">frac_data</span><span class="o">.</span><span class="n">X1</span><span class="p">,</span> <span class="n">frac_data</span><span class="o">.</span><span class="n">X2</span>
     <span class="n">J</span> <span class="o">=</span> <span class="n">frac_data</span><span class="o">.</span><span class="n">J</span>
     <span class="n">Z</span> <span class="o">=</span> <span class="n">frac_data</span><span class="o">.</span><span class="n">Z</span>
@@ -858,15 +898,14 @@ simulated or empirical shares.</p>
     <span class="n">n_x2</span> <span class="o">=</span> <span class="n">X2</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="c1"># combine exogenous regressors and instruments</span>
-    <span class="n">Z_full</span> <span class="o">=</span> <span class="n">make_Z_full</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">X1_exo</span><span class="p">,</span> <span class="n">X2_exo</span><span class="p">,</span> <span class="n">degree_Z</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">degree_X1</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">degree_X2</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">Z_full</span> <span class="o">=</span> <span class="n">make_Z_full</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">X1_exo</span><span class="p">,</span> <span class="n">degree_Z</span><span class="o">=</span><span class="n">degree_Z</span><span class="p">,</span> <span class="n">degree_X1</span><span class="o">=</span><span class="n">degree_X1</span><span class="p">)</span>
 
     <span class="c1"># project on the full set of instruments</span>
     <span class="n">y_hat</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">r2_y</span> <span class="o">=</span> <span class="n">proj_Z_full</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Z_full</span><span class="p">)</span>
     <span class="n">K_hat</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">r2_K</span> <span class="o">=</span> <span class="n">proj_Z_full</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">Z_full</span><span class="p">)</span>
     <span class="n">X1_hat</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">r2_X1</span> <span class="o">=</span> <span class="n">proj_Z_full</span><span class="p">(</span><span class="n">X1</span><span class="p">,</span> <span class="n">Z_full</span><span class="p">)</span>
 
-    <span class="n">print_stars</span><span class="p">(</span><span class="s2">&quot;The first stage R2s are:&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   (using </span><span class="si">{</span><span class="n">Z_full</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> instruments)&quot;</span><span class="p">)</span>
+    <span class="n">print_stars</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The first stage R2s are (using </span><span class="si">{</span><span class="n">Z_full</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> instruments):&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;     y: </span><span class="si">{</span><span class="n">r2_y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_x1</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;     </span><span class="si">{</span><span class="n">names_vars_beta</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">r2_X1</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -880,7 +919,7 @@ simulated or empirical shares.</p>
     <span class="n">betas_est</span> <span class="o">=</span> <span class="n">betas_sigmas_est</span><span class="p">[:</span><span class="n">n_x1</span><span class="p">]</span>
     <span class="n">sigmas_squared_est</span> <span class="o">=</span> <span class="n">betas_sigmas_est</span><span class="p">[</span><span class="n">n_x1</span><span class="p">:]</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">sigmas_squared_est</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> The variance estimates are&quot;</span><span class="p">)</span>
+        <span class="n">print_stars</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> The variance estimates are&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">sigmas_squared_est</span><span class="p">)</span>
         <span class="n">bs_error_abort</span><span class="p">(</span><span class="s2">&quot;Negative variance estimate!&quot;</span><span class="p">)</span>
     <span class="n">sigmas_est</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigmas_squared_est</span><span class="p">)</span>
