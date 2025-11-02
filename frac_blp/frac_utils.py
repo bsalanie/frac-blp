@@ -32,10 +32,8 @@ def make_X(X_exo: np.ndarray | None, X_endo: np.ndarray | None) -> np.ndarray:
 def make_Z_full(
     Z: np.ndarray,
     X1_exo: np.ndarray | None = None,
-    X2_exo: np.ndarray | None = None,
-    degree_Z: int = 1,
-    degree_X1: int = 0,
-    degree_X2: int = 0,
+    degree_Z: int = 2,
+    degree_X1: int = 2,
 ) -> np.ndarray:
     """
     Build a full set of polynomial instruments for FRAC without demographics.
@@ -43,10 +41,8 @@ def make_Z_full(
     Args:
         Z (np.ndarray): Baseline instruments.
         X1_exo (np.ndarray | None): Exogenous regressors without random coefficients.
-        X2_exo (np.ndarray | None): Exogenous regressors with random coefficients.
         degree_Z (int): Maximum degree applied to columns of ``Z`` (must be >= 0).
         degree_X1 (int): Maximum degree applied to columns of ``X1_exo``.
-        degree_X2 (int): Maximum degree applied to columns of ``X2_exo``.
 
     Returns:
         np.ndarray: Instrument matrix whose columns enumerate every admissible
@@ -62,37 +58,27 @@ def make_Z_full(
     columns: list[np.ndarray] = [np.ones(n_obs)]
 
     n_x1 = 0 if X1_exo is None else X1_exo.shape[1]
-    n_x2 = 0 if X2_exo is None else X2_exo.shape[1]
-
     max_dx1 = degree_X1 if X1_exo is not None else 0
-    max_dx2 = degree_X2 if X2_exo is not None else 0
 
     for d_z in range(degree_Z + 1):
         z_indices = [None] if d_z == 0 else range(n_z)
         for iz in z_indices:
             base_z = np.ones(n_obs) if iz is None else Z[:, iz] ** d_z
+            # str_base_z = " " if iz is None else f"Z[:, {iz}] ** {d_z} "
 
             for d_x1 in range(max_dx1 + 1):
                 x1_indices = [None] if d_x1 == 0 else range(n_x1)
                 for ix1 in x1_indices:
                     if ix1 is None:
                         term_x1 = np.ones(n_obs)
+                        # str_X1 = "1 "
                     else:
                         assert X1_exo is not None
                         term_x1 = X1_exo[:, ix1] ** d_x1
-
-                    for d_x2 in range(max_dx2 + 1):
-                        x2_indices = [None] if d_x2 == 0 else range(n_x2)
-                        for ix2 in x2_indices:
-                            if d_z == d_x1 == d_x2 == 0:
-                                continue  # ones already included
-
-                            if ix2 is None:
-                                term_x2 = np.ones(n_obs)
-                            else:
-                                assert X2_exo is not None
-                                term_x2 = X2_exo[:, ix2] ** d_x2
-                            columns.append(base_z * term_x1 * term_x2)
+                        # str_X1 = f"X1_exo[:, {ix1}] ** {d_x1} "
+                    columns.append(base_z * term_x1)
+                    # print(f"{iz=}, {d_z=}, {ix1=}, {d_x1=}")
+                    # print("    " + str_base_z + " * " + str_X1)
 
     return np.column_stack(columns)
 
