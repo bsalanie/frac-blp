@@ -23,7 +23,7 @@ def simulate_frac_nodemog_data(
     $$
 
     Args:
-        FracNoDemogSimulationParameters: parameters for the simulation.
+        params: parameters for the simulation.
 
     Returns:
         FracNoDemogSimulatedData: Simulated dataset ready for FRAC estimation.

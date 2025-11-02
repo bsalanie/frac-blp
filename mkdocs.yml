@@ -23,7 +23,7 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          paths:
+          paths: [frac_blp]
 
 
 # theme:

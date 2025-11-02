@@ -64,5 +64,8 @@ betabar, sigmas = frac nodemog estimate(frac data)
 
 ### Release notes
 
+#### 0.2 (October 27, 2025)
+Improved README.
+
 #### 0.1 (October 26, 2025)
 First working version, no demographics.
