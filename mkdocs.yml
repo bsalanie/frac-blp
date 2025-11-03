@@ -23,7 +23,9 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          paths: [frac_blp]
+          # Add the project root to sys.path so `import frac_blp` works
+          # in CI. Pointing at the package directory itself breaks imports.
+          paths: [.]
 
 
 # theme:
