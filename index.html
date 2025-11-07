@@ -413,6 +413,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#03-november-67-2025" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.3 (November 67, 2025)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#02-october-27-2025" class="md-nav__link">
     <span class="md-ellipsis">
       0.2 (October 27, 2025)
@@ -691,6 +700,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#03-november-67-2025" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.3 (November 67, 2025)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#02-october-27-2025" class="md-nav__link">
     <span class="md-ellipsis">
       0.2 (October 27, 2025)
@@ -750,46 +768,59 @@
 <h3 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h3>
 <p>The package estimates a second-order approximation to the macro BLP model with random coefficients using the FRAC method of Salanie and Wolak. </p>
 <p>At this early stage, the package only implements the basic version of the model without demographics. </p>
-<p>The user should be familiar with the macro BLP model (Berry, Levinsohn, and Pakes, 1995). We use very similar notation to that of Conlon and Gortmaker in their <code>pyblp</code> package:</p>
-<p>The inputs are:
-* <code>T</code>: the number of markets 
-* <code>J</code>: the number of products per market
-* <code>X1</code>: variables with fixed coefficients, an <code>(N=T*J, n1)</code> matrix
-* <code>X2</code>: variables with random coefficients, an <code>(N, n2)</code> matrix
-* <code>Z</code>: instruments, an <code>(N, nz)</code> matrix.</p>
-<p>The outputs are:
-* <code>betas</code>: the coefficients on the variables with fixed coefficients and the mean coefficients on the variables with random coefficients, an <code>(n1 + n2)</code> vector
-* <code>sigmas</code>: the standard deviations of the coefficients on the variables with random coefficients, an <code>n2</code> vector.</p>
-<h4 id="entering-the-data">entering the data<a class="headerlink" href="#entering-the-data" title="Permanent link">&para;</a></h4>
-<p>The user must provide the data as numpy arrays with <code>T*J</code> rows:</p>
+<p>The user should be familiar with the macro BLP model (Berry, Levinsohn, and Pakes, 1995). We use very similar notation to that of Conlon and Gortmaker in their <code>pyblp</code> package.</p>
+<p>The inputs are:</p>
 <ul>
-<li>
-<p><code>X1_exo, X1_endo, X2_exo, X2_endo</code>: matrices of exogenous and endogenous variables with fixed and random coefficients</p>
-</li>
-<li>
-<p><code>Z</code>: matrix of instruments</p>
-</li>
-<li>
-<p><code>shares</code>: vector of market shares.</p>
-</li>
+<li><code>T</code>: the number of markets </li>
+<li><code>J</code>: the number of products per market</li>
 </ul>
-<p>The observations should be ordered by market, i.e., the first <code>J</code> rows correspond to market 1, the next <code>J</code> rows to market 2, etc.</p>
-<p>These are entered in the model as follows:
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span>
-<span class="normal">7</span>
-<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">rom</span> <span class="n">frac</span> <span class="n">blp</span><span class="o">.</span><span class="n">frac</span> <span class="n">classes</span> <span class="kn">import</span><span class="w"> </span><span class="nn">FracNodemogRealData</span>
+<p>The data must contain <code>N=T*J</code> observations, corresponding to all products in all markets.
+The observations should be ordered by market, i.e., the first <code>J</code> rows correspond to market 1, the next <code>J</code> rows to market 2, etc.</p>
+<p>The user must provide the following data matrices:</p>
+<ul>
+<li><code>Z</code>: a matrix of instruments, to which the program will add a constant</li>
+<li><code>shares</code>: a <code>N</code>-vector of market shares.</li>
+<li>
+<p>the regressors as a Pandas data frame with <code>N</code> rows. The program will construct the following Numpy matrices from the data frame:</p>
+</li>
+<li>
+<p><code>X1_exo</code>, the matrix of exogenous variables with fixed coefficients, using the column names in <code>names_X1_exo</code></p>
+</li>
+<li><code>X1_endo</code>, the matrix of endogenous variables with fixed coefficients, using the column names in <code>names_X1_endo</code></li>
+<li><code>X2_exo</code>, the matrix of exogenous variables with fixed coefficients, using the column names in <code>names_X2_exo</code></li>
+<li><code>X1_endo</code>, the matrix of endogenous variables with fixed coefficients, using the column names in <code>names_X2_endo</code>.</li>
+</ul>
+<p><code>names_X1_exo, names_X1_endo, names_X2_exo, names_X2_endo</code> are lists of strings provided by the user with the names of the columns in the data frame corresponding to each of these four types of variables.</p>
+<p>A constant term will not be added automatically, so if desired the user must include a column of ones in <code>X1_exo</code> and/or <code>X2_exo</code>.</p>
+<p><strong><code>X2_exo</code> must be a subset of <code>X1_exo</code>, and <code>X2_endo</code> must be a subset of <code>X1_endo</code> (i.e., all variables with random coefficients must also have fixed coefficients). Any of these four matrices can be <code>None</code> if there are no variables of that type.</strong></p>
+<p>The outputs are:</p>
+<ul>
+<li><code>betas</code>: the estimates on the variables with fixed coefficients <code>X1_exo</code>, <code>X1_endo</code> and the mean coefficients on the variables with random coefficients <code>X2_exo</code>, <code>X2_endo</code>, in that order.</li>
+<li><code>sigmas</code>: the standard deviations of the coefficients on the variables with random coefficients <code>X2_exo</code> and <code>X2_endo</code>, in that order.</li>
+</ul>
+<h4 id="entering-the-data">entering the data<a class="headerlink" href="#entering-the-data" title="Permanent link">&para;</a></h4>
+<p>The data must first be entered into a <code>FracNodemogRealData</code> object:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">frac</span> <span class="n">blp</span><span class="o">.</span><span class="n">frac</span> <span class="n">classes</span> <span class="kn">import</span><span class="w"> </span><span class="nn">FracNodemogRealData</span>
 
 <span class="n">frac</span> <span class="n">data</span> <span class="o">=</span> <span class="n">FracNodemogRealData</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span>
-                            <span class="n">X1_exo</span><span class="p">,</span> <span class="n">X1_endo</span><span class="p">,</span>
-                            <span class="n">X2_exo</span><span class="p">,</span> <span class="n">X2_endo</span><span class="p">,</span>
-                            <span class="n">Z</span><span class="p">,</span> <span class="n">shares</span><span class="p">,</span>
-                            <span class="n">names_vars_beta</span><span class="p">,</span>
-                            <span class="n">names_vars_sigma</span><span class="p">)</span>
+                            <span class="n">names_X1_exo</span><span class="p">,</span>
+                            <span class="n">names_X1_endo</span><span class="p">,</span>
+                            <span class="n">names_X2_exo</span><span class="p">,</span>
+                            <span class="n">names_X2_endo</span><span class="p">,</span>
+                            <span class="n">df_X1</span><span class="p">,</span> 
+                            <span class="n">Z</span><span class="p">,</span> 
+                            <span class="n">shares</span><span class="p">,</span>
+                            <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 Then the model can be estimated with:
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
@@ -797,8 +828,16 @@ Then the model can be estimated with:
 <span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">frac_blp.frac_nodemog</span><span class="w"> </span><span class="kn">import</span> <span class="n">estimate</span>
 
 <span class="n">betabar</span><span class="p">,</span> <span class="n">sigmas</span> <span class="o">=</span> <span class="n">frac</span> <span class="n">nodemog</span> <span class="n">estimate</span><span class="p">(</span><span class="n">frac</span> <span class="n">data</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div></p>
+</code></pre></div></td></tr></table></div>
+<code>frac_demog_estimate</code> also has optional arguments to define the combinations of instruments and exogeneous variables to be used in the first stage:</p>
+<ul>
+<li>if <code>degree_Z=d</code> is provided, then all interactions of the columns of <code>Z</code> up to degree <code>d</code> will be used as instruments. </li>
+<li>if <code>degree_X1=d'</code> is provided, then all interactions of the columns of <code>X1_exo</code> up to degree <code>d'</code> will also be used, on their own and multiplied by the interactions of <code>Z</code>.</li>
+</ul>
+<p>The default has <code>degree_Z=2</code> and <code>degree_X1=2</code>.</p>
 <h3 id="release-notes">Release notes<a class="headerlink" href="#release-notes" title="Permanent link">&para;</a></h3>
+<h4 id="03-november-67-2025">0.3 (November 67, 2025)<a class="headerlink" href="#03-november-67-2025" title="Permanent link">&para;</a></h4>
+<p>Improved interface for data input. Still no demographics.</p>
 <h4 id="02-october-27-2025">0.2 (October 27, 2025)<a class="headerlink" href="#02-october-27-2025" title="Permanent link">&para;</a></h4>
 <p>Improved README.</p>
 <h4 id="01-october-26-2025">0.1 (October 26, 2025)<a class="headerlink" href="#01-october-26-2025" title="Permanent link">&para;</a></h4>

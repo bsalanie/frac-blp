@@ -664,7 +664,9 @@
 <a id="frac_blp.examples.example_frac_nodemog"></a>
     <div class="doc doc-contents first">
 
-        <p>Executable example demonstrating FRAC estimation without demographics.</p>
+        <p>Executable example demonstrating FRAC estimation without demographics.
+The example uses simulated data with all <code>X1</code> variables generated as N(0,1) iid;
+the user can modify the dimensions and other parameters of the simulation as desired.</p>
 
 
 
@@ -690,26 +692,20 @@
 
 
 <h2 id="frac_blp.examples.example_frac_nodemog.run_example" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">run_example</span><span class="p">()</span></code>
+            <code class="highlight language-python"><span class="n">run_example</span><span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">n_X1_exo</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_X1_endo</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_X2_exo</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_X2_endo</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_Z</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sigma_x</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">sigma_xi</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">rho_x_xi</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">rho_x_z</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">betas</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">4.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]),</span> <span class="n">sigmas</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]))</span></code>
 
 <a href="#frac_blp.examples.example_frac_nodemog.run_example" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
     <div class="doc doc-contents ">
 
-        <p>Run the FRAC estimation example on simulated data.</p>
+        <p>Simulates data and estimates it with FRAC without demographics;
+then repeats the estimation using the real data interface.</p>
 
 
             <details class="quote">
               <summary>Source code in <code>frac_blp/examples/example_frac_nodemog.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">18</span>
 <span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span>
@@ -736,20 +732,75 @@
 <span class="normal">42</span>
 <span class="normal">43</span>
 <span class="normal">44</span>
-<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run_example</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run the FRAC estimation example on simulated data.&quot;&quot;&quot;</span>
-    <span class="n">print_stars</span><span class="p">(</span><span class="s2">&quot;Hello from fracblp!&quot;</span><span class="p">)</span>
-    <span class="n">params</span> <span class="o">=</span> <span class="n">FracNoDemogSimulationParameters</span><span class="p">(</span>
-        <span class="n">T</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-        <span class="n">J</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-        <span class="n">n_X1_endo</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-        <span class="n">n_X2_endo</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-        <span class="n">n_Z</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-        <span class="n">betas</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">]),</span>
-        <span class="n">rho_x_z</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-        <span class="n">sigmas</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">]),</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run_example</span><span class="p">(</span>
+    <span class="n">T</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="n">J</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="n">n_X1_exo</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">n_X1_endo</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">n_X2_exo</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">n_X2_endo</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">n_Z</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">sigma_x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">sigma_xi</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">rho_x_xi</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span>
+    <span class="n">rho_x_z</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span>
+    <span class="n">betas</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">4.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]),</span>
+    <span class="n">sigmas</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]),</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simulates data and estimates it with FRAC without demographics;</span>
+<span class="sd">    then repeats the estimation using the real data interface.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">print_stars</span><span class="p">(</span><span class="s2">&quot;Hello from frac_blp!&quot;</span><span class="p">)</span>
+    <span class="n">simulated_frac_data</span> <span class="o">=</span> <span class="n">simulate_frac_nodemog_data</span><span class="p">(</span>
+        <span class="n">T</span><span class="o">=</span><span class="n">T</span><span class="p">,</span>
+        <span class="n">J</span><span class="o">=</span><span class="n">J</span><span class="p">,</span>
+        <span class="n">n_X1_exo</span><span class="o">=</span><span class="n">n_X1_exo</span><span class="p">,</span>
+        <span class="n">n_X1_endo</span><span class="o">=</span><span class="n">n_X1_endo</span><span class="p">,</span>
+        <span class="n">n_X2_exo</span><span class="o">=</span><span class="n">n_X2_exo</span><span class="p">,</span>
+        <span class="n">n_X2_endo</span><span class="o">=</span><span class="n">n_X2_endo</span><span class="p">,</span>
+        <span class="n">n_Z</span><span class="o">=</span><span class="n">n_Z</span><span class="p">,</span>
+        <span class="n">sigma_x</span><span class="o">=</span><span class="n">sigma_x</span><span class="p">,</span>
+        <span class="n">sigma_xi</span><span class="o">=</span><span class="n">sigma_xi</span><span class="p">,</span>
+        <span class="n">rho_x_xi</span><span class="o">=</span><span class="n">rho_x_xi</span><span class="p">,</span>
+        <span class="n">rho_x_z</span><span class="o">=</span><span class="n">rho_x_z</span><span class="p">,</span>
+        <span class="n">betas</span><span class="o">=</span><span class="n">betas</span><span class="p">,</span>
+        <span class="n">sigmas</span><span class="o">=</span><span class="n">sigmas</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">simulated_frac_data</span> <span class="o">=</span> <span class="n">simulate_frac_nodemog_data</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
     <span class="n">print_stars</span><span class="p">(</span><span class="s2">&quot;Simulated Data:&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">simulated_frac_data</span><span class="p">)</span>
 
@@ -757,17 +808,25 @@
     <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">frac_nodemog_estimate</span><span class="p">(</span><span class="n">simulated_frac_data</span><span class="p">,</span> <span class="n">degree_Z</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">degree_X1</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
     <span class="n">print_stars</span><span class="p">(</span><span class="s2">&quot;Example with the real data interface:&quot;</span><span class="p">)</span>
+    <span class="n">df_X1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">X1_exo</span><span class="p">,</span>
+                <span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">X1_endo</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">),</span>
+        <span class="n">columns</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">names_X1</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">real_frac_data</span> <span class="o">=</span> <span class="n">FracNoDemogRealData</span><span class="p">(</span>
         <span class="n">T</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
         <span class="n">J</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">J</span><span class="p">,</span>
-        <span class="n">X1_exo</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">X1_exo</span><span class="p">,</span>
-        <span class="n">X1_endo</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">X1_endo</span><span class="p">,</span>
-        <span class="n">X2_exo</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">X2_exo</span><span class="p">,</span>
-        <span class="n">X2_endo</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">X2_endo</span><span class="p">,</span>
+        <span class="n">df_X1</span><span class="o">=</span><span class="n">df_X1</span><span class="p">,</span>
         <span class="n">Z</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">Z</span><span class="p">,</span>
+        <span class="n">names_X1_exo</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">names_X1_exo</span><span class="p">,</span>
+        <span class="n">names_X1_endo</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">names_X1_endo</span><span class="p">,</span>
+        <span class="n">names_X2_exo</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">names_X2_exo</span><span class="p">,</span>
+        <span class="n">names_X2_endo</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">names_X2_endo</span><span class="p">,</span>
         <span class="n">shares</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">shares</span><span class="p">,</span>
-        <span class="n">names_vars_beta</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">names_vars_beta</span><span class="p">,</span>
-        <span class="n">names_vars_sigma</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">names_vars_sigma</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">print_stars</span><span class="p">(</span><span class="s2">&quot;Estimating with FRAC&quot;</span><span class="p">)</span>
     <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">frac_nodemog_estimate</span><span class="p">(</span><span class="n">real_frac_data</span><span class="p">,</span> <span class="n">degree_Z</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">degree_X1</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
