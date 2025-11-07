@@ -207,12 +207,13 @@ class FracNoDemogRealData(_FracNoDemogBase):
     the observed market shares vector.
 
     Attributes:
-        df_X1 (pd.DataFrame): DataFrame with regressors ``X1`` only  
+        df_X1 (pd.DataFrame): DataFrame with regressors ``X1`` only
         Z (np.ndarray): Instrument matrix, shape ``(n_obs, n_Z)``; we add the constant
         shares (np.ndarray): Observed product shares stacked by market, shape
             ``(n_obs,)`` with values in ``[0, 1]`` and per-market sums
             not exceeding ``1``.
     """
+
     df_X1: pd.DataFrame
     Z: np.ndarray
     shares: np.ndarray

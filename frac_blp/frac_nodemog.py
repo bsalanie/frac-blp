@@ -56,7 +56,9 @@ def frac_nodemog_estimate(
     X1_hat, _, r2_X1 = proj_Z_full(X1, Z_full)
 
     # breakpoint()
-    print_stars(f"The first stage R2s of projecting on the full set of {Z_full.shape[1]} instruments are:")
+    print_stars(
+        f"The first stage R2s of projecting on the full set of {Z_full.shape[1]} instruments are:"
+    )
     print(f"    for y: {r2_y[0]:.3f}")
     for ix in range(n_X1):
         print(f"     for {names_X1[ix]}: {r2_X1[ix]:.3f}")
