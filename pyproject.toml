@@ -1,6 +1,6 @@
 [project]
 name = "frac-blp"
-version = "0.2.0"
+version = "0.3.0"
 description = "FRAC estimation for macro-BLP models"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -10,6 +10,7 @@ dependencies = [
     "bs_python_utils",
     "pydantic>=2.12.3",
     "pydantic-settings>=2.11.0",
+    "pandas>=2.3.3",
 ]
 
 [tool.setuptools]
