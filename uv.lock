@@ -112,7 +112,7 @@ wheels = [
 
 [[package]]
 name = "bs-python-utils"
-version = "0.8.1"
+version = "0.8.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "altair" },
@@ -135,9 +135,9 @@ dependencies = [
     { name = "streamlit" },
     { name = "vega-datasets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a3/3b/9b746888da52af3f501cf481b7e7ad45d8f5c91e2cd0fe5b02344019ee86/bs_python_utils-0.8.1.tar.gz", hash = "sha256:08c374fb641ae7b7b1eb81028345602bed9654478919ae3b5a58920b63d8f178", size = 66251, upload-time = "2025-10-19T01:09:44.17Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ca/51/2d9af0ba6e0699d8fd1093f32729c54ca9b79d795fe0205699350f8f7df3/bs_python_utils-0.8.2.tar.gz", hash = "sha256:ac84de4594d5ea042040135147d1048d3d72284518b08c374f88fd9884bbfcfc", size = 386588, upload-time = "2025-12-02T22:15:40.968Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e2/77/3a4fdd096dcc24e61d93389732eba2c863fcf9b40e5337889bc8d6a6a932/bs_python_utils-0.8.1-py3-none-any.whl", hash = "sha256:713ddd00766a99dbaebd612067b5716c54fc90f267de4d77ba825caebfa8a8ef", size = 65741, upload-time = "2025-10-19T01:09:42.987Z" },
+    { url = "https://files.pythonhosted.org/packages/9f/cf/7155df19c1dbbbb6f62489dbbbebb26ad4f1e27242924e5afdc8379cfbef/bs_python_utils-0.8.2-py3-none-any.whl", hash = "sha256:86cae92d677c672427c6eec3f5d7c356a9020a420f0b2487ffbb8f84dcf9bc67", size = 405601, upload-time = "2025-12-02T22:15:39.582Z" },
 ]
 
 [[package]]
@@ -429,7 +429,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "bs-python-utils" },
+    { name = "bs-python-utils", specifier = ">=0.8.2" },
     { name = "numpy" },
     { name = "pandas", specifier = ">=2.3.3" },
     { name = "pydantic", specifier = ">=2.12.3" },
