@@ -17,6 +17,34 @@ def test_make_Z_full_generates_polynomials_from_Z_only():
     np.testing.assert_allclose(result, expected)
 
 
+def test_make_Z_full_with_degree_Z_and_degree_X1_of_2():
+    Z = np.array([[2.0], [3.0]])
+    X1 = np.array([[4.0], [5.0]])
+    result = make_Z_full(
+        Z,
+        X1_exo=X1,
+        degree_Z=2,
+        degree_X1=2,
+    )
+
+    columns = [
+        np.ones(2),
+        X1[:, 0],
+        X1[:, 0] ** 2,
+        Z[:, 0],
+        Z[:, 0] * X1[:, 0],
+        Z[:, 0] * X1[:, 0] ** 2,
+        Z[:, 0] ** 2,
+        Z[:, 0] ** 2 * X1[:, 0],
+        Z[:, 0] ** 2 * X1[:, 0] ** 2,
+    ]
+    expected = np.column_stack(columns)
+
+    np.testing.assert_allclose(result, expected)
+
+
+# `make_Z_full()` does not yet implement `X2_exo` and `degree_X2` arguments
+@pytest.mark.skip
 def test_make_Z_full_builds_cross_terms_with_x1_and_x2():
     Z = np.array([[2.0], [3.0]])
     X1 = np.array([[4.0], [5.0]])

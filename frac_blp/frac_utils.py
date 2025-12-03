@@ -55,7 +55,7 @@ def make_Z_full(
         raise ValueError("degree_Z must be non-negative.")
 
     n_obs, n_z = Z.shape
-    columns: list[np.ndarray] = [np.ones(n_obs)]
+    columns: list[np.ndarray] = []
 
     n_x1 = 0 if X1_exo is None else X1_exo.shape[1]
     max_dx1 = degree_X1 if X1_exo is not None else 0
