@@ -1,5 +1,7 @@
 """Utility helpers for building instruments and projections in FRAC."""
 
+from itertools import combinations_with_replacement
+
 import numpy as np
 from scipy import linalg as spla
 
@@ -29,6 +31,19 @@ def make_X(X_exo: np.ndarray | None, X_endo: np.ndarray | None) -> np.ndarray:
     return X
 
 
+def _monomials_of_degree(mat: np.ndarray, d: int) -> list[np.ndarray]:
+    n_obs, n_cols = mat.shape
+    if d == 0:
+        return [np.ones(n_obs)]
+    result = []
+    for combo in combinations_with_replacement(range(n_cols), d):
+        term = np.ones(n_obs)
+        for c in combo:
+            term = term * mat[:, c]
+        result.append(term)
+    return result
+
+
 def make_Z_full(
     Z: np.ndarray,
     X1_exo: np.ndarray | None = None,
@@ -55,30 +70,15 @@ def make_Z_full(
         raise ValueError("degree_Z must be non-negative.")
 
     n_obs, n_z = Z.shape
-    columns: list[np.ndarray] = []
-
-    n_x1 = 0 if X1_exo is None else X1_exo.shape[1]
+    effective_X1 = X1_exo if X1_exo is not None else np.ones((n_obs, 1))
     max_dx1 = degree_X1 if X1_exo is not None else 0
 
+    columns: list[np.ndarray] = []
     for d_z in range(degree_Z + 1):
-        z_indices = [None] if d_z == 0 else range(n_z)
-        for iz in z_indices:
-            base_z = np.ones(n_obs) if iz is None else Z[:, iz] ** d_z
-            # str_base_z = " " if iz is None else f"Z[:, {iz}] ** {d_z} "
-
+        for z_term in _monomials_of_degree(Z, d_z):
             for d_x1 in range(max_dx1 + 1):
-                x1_indices = [None] if d_x1 == 0 else range(n_x1)
-                for ix1 in x1_indices:
-                    if ix1 is None:
-                        term_x1 = np.ones(n_obs)
-                        # str_X1 = "1 "
-                    else:
-                        assert X1_exo is not None
-                        term_x1 = X1_exo[:, ix1] ** d_x1
-                        # str_X1 = f"X1_exo[:, {ix1}] ** {d_x1} "
-                    columns.append(base_z * term_x1)
-                    # print(f"{iz=}, {d_z=}, {ix1=}, {d_x1=}")
-                    # print("    " + str_base_z + " * " + str_X1)
+                for x1_term in _monomials_of_degree(effective_X1, d_x1):
+                    columns.append(z_term * x1_term)
 
     return np.column_stack(columns)
 
