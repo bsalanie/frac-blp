@@ -5,14 +5,13 @@ the user can modify the dimensions and other parameters of the simulation as des
 
 import numpy as np
 import pandas as pd
-
 from bs_python_utils.bsutils import print_stars
 
 from frac_blp.frac_classes import FracNoDemogRealData
+from frac_blp.frac_nodemog import frac_nodemog_estimate
 from frac_blp.simulate_frac_nodemog_data import (
     simulate_frac_nodemog_data,
 )
-from frac_blp.frac_nodemog import frac_nodemog_estimate
 
 
 def run_example(
@@ -31,7 +30,7 @@ def run_example(
     sigmas: np.ndarray = np.array([1.0]),
 ):
     """Simulates data and estimates it with FRAC without demographics;
-    then repeats the estimation using the real data interface.
+    then repeats the estimation using the interface for real data.
     """
     print_stars("Hello from frac_blp!")
     simulated_frac_data = simulate_frac_nodemog_data(

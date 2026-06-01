@@ -1,13 +1,11 @@
 # frac_blp
 
-<!-- [GitHub last commit](https://img.shields.io/github/last-commit/bsalanie/frac-blp)
-
-[![Release](https://img.shields.io/github/v/release/bsalanie/frac-blp)](https://img.shields.io/github/v/release/bsalanie/frac-blp)
-
-[![Build status](https://img.shields.io/github/actions/workflow/status/bsalanie/frac-blp/main.yml?branch=main)](https://github.com/bsalanie/frac-blp/actions/workflows/main.yml?query=branch%3Amain) <!-- [![codecov](https://codecov.io/gh/bsalanie/frac-blp/branch/main/graph/badge.svg)](https://codecov.io/gh/bsalanie/frac-blp) 
-
- [![Commit activity](https://img.shields.io/github/commit-activity/m/bsalanie/frac-blp)](https://img.shields.io/github/commit-activity/m/bsalanie/frac-blp) [![License](https://img.shields.io/github/license/bsalanie/frac-blp)](https://img.shields.io/github/license/bsalanie/frac-blp)
--->
+[![PyPI](https://img.shields.io/pypi/v/frac-blp)](https://pypi.org/project/frac-blp/)
+[![Python versions](https://img.shields.io/pypi/pyversions/frac-blp)](https://pypi.org/project/frac-blp/)
+[![CI](https://img.shields.io/github/actions/workflow/status/bsalanie/frac-blp/main.yml?branch=main&label=CI)](https://github.com/bsalanie/frac-blp/actions/workflows/main.yml)
+[![Docs](https://img.shields.io/badge/docs-mkdocs-blue)](https://bsalanie.github.io/frac-blp/)
+[![License](https://img.shields.io/github/license/bsalanie/frac-blp)](https://github.com/bsalanie/frac-blp)
+[![Last commit](https://img.shields.io/github/last-commit/bsalanie/frac-blp)](https://github.com/bsalanie/frac-blp/commits/main)
 
 **FRAC for macro-BLP (Salanie-Wolak)**.
 
@@ -17,7 +15,7 @@
 ### Overview
 The package estimates a second-order approximation to the macro BLP model with random coefficients using the FRAC method of Salanie and Wolak. 
 
-At this early stage, the package only implements the basic version of the model without demographics. 
+**At this early stage, the package only implements the basic version of the model without demographics. The random coefficients are assumed to be independently distributed.**
 
 The user should be familiar with the macro BLP model (Berry, Levinsohn, and Pakes, 1995). We use very similar notation to that of Conlon and Gortmaker in their `pyblp` package.
 
@@ -87,7 +85,10 @@ The default has `degree_Z=2` and `degree_X1=2`.
 
 ### Release notes
 
-#### 0.3 (November 67, 2025)
+#### 0.4 (June 1, 2026)
+Added higher-order regressors (not used for estimation yet).
+
+#### 0.3 (November 7, 2025)
 Improved interface for data input. Still no demographics.
 
 #### 0.2 (October 27, 2025)
