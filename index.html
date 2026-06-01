@@ -413,9 +413,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#03-november-67-2025" class="md-nav__link">
+  <a href="#04-june-1-2026" class="md-nav__link">
     <span class="md-ellipsis">
-      0.3 (November 67, 2025)
+      0.4 (June 1, 2026)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#03-november-7-2025" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.3 (November 7, 2025)
     </span>
   </a>
   
@@ -700,9 +709,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#03-november-67-2025" class="md-nav__link">
+  <a href="#04-june-1-2026" class="md-nav__link">
     <span class="md-ellipsis">
-      0.3 (November 67, 2025)
+      0.4 (June 1, 2026)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#03-november-7-2025" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.3 (November 7, 2025)
     </span>
   </a>
   
@@ -751,15 +769,12 @@
 
 
 <h1 id="frac_blp">frac_blp<a class="headerlink" href="#frac_blp" title="Permanent link">&para;</a></h1>
-<!-- [GitHub last commit](https://img.shields.io/github/last-commit/bsalanie/frac-blp)
-
-[![Release](https://img.shields.io/github/v/release/bsalanie/frac-blp)](https://img.shields.io/github/v/release/bsalanie/frac-blp)
-
-[![Build status](https://img.shields.io/github/actions/workflow/status/bsalanie/frac-blp/main.yml?branch=main)](https://github.com/bsalanie/frac-blp/actions/workflows/main.yml?query=branch%3Amain) <!-- [![codecov](https://codecov.io/gh/bsalanie/frac-blp/branch/main/graph/badge.svg)](https://codecov.io/gh/bsalanie/frac-blp) 
-
- [![Commit activity](https://img.shields.io/github/commit-activity/m/bsalanie/frac-blp)](https://img.shields.io/github/commit-activity/m/bsalanie/frac-blp) [![License](https://img.shields.io/github/license/bsalanie/frac-blp)](https://img.shields.io/github/license/bsalanie/frac-blp)
--->
-
+<p><a href="https://pypi.org/project/frac-blp/"><img alt="PyPI" src="https://img.shields.io/pypi/v/frac-blp" /></a>
+<a href="https://pypi.org/project/frac-blp/"><img alt="Python versions" src="https://img.shields.io/pypi/pyversions/frac-blp" /></a>
+<a href="https://github.com/bsalanie/frac-blp/actions/workflows/main.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/bsalanie/frac-blp/main.yml?branch=main&amp;label=CI" /></a>
+<a href="https://bsalanie.github.io/frac-blp/"><img alt="Docs" src="https://img.shields.io/badge/docs-mkdocs-blue" /></a>
+<a href="https://github.com/bsalanie/frac-blp"><img alt="License" src="https://img.shields.io/github/license/bsalanie/frac-blp" /></a>
+<a href="https://github.com/bsalanie/frac-blp/commits/main"><img alt="Last commit" src="https://img.shields.io/github/last-commit/bsalanie/frac-blp" /></a></p>
 <p><strong>FRAC for macro-BLP (Salanie-Wolak)</strong>.</p>
 <ul>
 <li><strong>Github repository</strong>: <a href="https://github.com/bsalanie/frac-blp/">https://github.com/bsalanie/frac-blp/</a></li>
@@ -767,7 +782,7 @@
 </ul>
 <h3 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h3>
 <p>The package estimates a second-order approximation to the macro BLP model with random coefficients using the FRAC method of Salanie and Wolak. </p>
-<p>At this early stage, the package only implements the basic version of the model without demographics. </p>
+<p><strong>At this early stage, the package only implements the basic version of the model without demographics. The random coefficients are assumed to be independently distributed.</strong></p>
 <p>The user should be familiar with the macro BLP model (Berry, Levinsohn, and Pakes, 1995). We use very similar notation to that of Conlon and Gortmaker in their <code>pyblp</code> package.</p>
 <p>The inputs are:</p>
 <ul>
@@ -836,7 +851,9 @@ Then the model can be estimated with:
 </ul>
 <p>The default has <code>degree_Z=2</code> and <code>degree_X1=2</code>.</p>
 <h3 id="release-notes">Release notes<a class="headerlink" href="#release-notes" title="Permanent link">&para;</a></h3>
-<h4 id="03-november-67-2025">0.3 (November 67, 2025)<a class="headerlink" href="#03-november-67-2025" title="Permanent link">&para;</a></h4>
+<h4 id="04-june-1-2026">0.4 (June 1, 2026)<a class="headerlink" href="#04-june-1-2026" title="Permanent link">&para;</a></h4>
+<p>Added higher-order regressors (not used for estimation yet).</p>
+<h4 id="03-november-7-2025">0.3 (November 7, 2025)<a class="headerlink" href="#03-november-7-2025" title="Permanent link">&para;</a></h4>
 <p>Improved interface for data input. Still no demographics.</p>
 <h4 id="02-october-27-2025">0.2 (October 27, 2025)<a class="headerlink" href="#02-october-27-2025" title="Permanent link">&para;</a></h4>
 <p>Improved README.</p>

@@ -700,12 +700,13 @@ the user can modify the dimensions and other parameters of the simulation as des
     <div class="doc doc-contents ">
 
         <p>Simulates data and estimates it with FRAC without demographics;
-then repeats the estimation using the real data interface.</p>
+then repeats the estimation using the interface for real data.</p>
 
 
             <details class="quote">
               <summary>Source code in <code>frac_blp/examples/example_frac_nodemog.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">18</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">17</span>
+<span class="normal">18</span>
 <span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span>
@@ -766,8 +767,7 @@ then repeats the estimation using the real data interface.</p>
 <span class="normal">76</span>
 <span class="normal">77</span>
 <span class="normal">78</span>
-<span class="normal">79</span>
-<span class="normal">80</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run_example</span><span class="p">(</span>
+<span class="normal">79</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run_example</span><span class="p">(</span>
     <span class="n">T</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
     <span class="n">J</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
     <span class="n">n_X1_exo</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -783,7 +783,7 @@ then repeats the estimation using the real data interface.</p>
     <span class="n">sigmas</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]),</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Simulates data and estimates it with FRAC without demographics;</span>
-<span class="sd">    then repeats the estimation using the real data interface.</span>
+<span class="sd">    then repeats the estimation using the interface for real data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">print_stars</span><span class="p">(</span><span class="s2">&quot;Hello from frac_blp!&quot;</span><span class="p">)</span>
     <span class="n">simulated_frac_data</span> <span class="o">=</span> <span class="n">simulate_frac_nodemog_data</span><span class="p">(</span>

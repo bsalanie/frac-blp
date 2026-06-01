@@ -836,9 +836,7 @@
 
             <details class="quote">
               <summary>Source code in <code>frac_blp/frac_utils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 9</span>
 <span class="normal">10</span>
 <span class="normal">11</span>
 <span class="normal">12</span>
@@ -858,7 +856,9 @@
 <span class="normal">26</span>
 <span class="normal">27</span>
 <span class="normal">28</span>
-<span class="normal">29</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">make_X</span><span class="p">(</span><span class="n">X_exo</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">X_endo</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">make_X</span><span class="p">(</span><span class="n">X_exo</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">X_endo</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Combine exogenous and endogenous regressors into a single regressor matrix.</span>
 
@@ -1038,22 +1038,7 @@
 
             <details class="quote">
               <summary>Source code in <code>frac_blp/frac_utils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">47</span>
 <span class="normal">48</span>
 <span class="normal">49</span>
 <span class="normal">50</span>
@@ -1115,30 +1100,15 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;degree_Z must be non-negative.&quot;</span><span class="p">)</span>
 
     <span class="n">n_obs</span><span class="p">,</span> <span class="n">n_z</span> <span class="o">=</span> <span class="n">Z</span><span class="o">.</span><span class="n">shape</span>
-    <span class="n">columns</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_obs</span><span class="p">)]</span>
-
-    <span class="n">n_x1</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">X1_exo</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">X1_exo</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">effective_X1</span> <span class="o">=</span> <span class="n">X1_exo</span> <span class="k">if</span> <span class="n">X1_exo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_obs</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
     <span class="n">max_dx1</span> <span class="o">=</span> <span class="n">degree_X1</span> <span class="k">if</span> <span class="n">X1_exo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">0</span>
 
+    <span class="n">columns</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">d_z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">degree_Z</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="n">z_indices</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="k">if</span> <span class="n">d_z</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_z</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">iz</span> <span class="ow">in</span> <span class="n">z_indices</span><span class="p">:</span>
-            <span class="n">base_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_obs</span><span class="p">)</span> <span class="k">if</span> <span class="n">iz</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">Z</span><span class="p">[:,</span> <span class="n">iz</span><span class="p">]</span> <span class="o">**</span> <span class="n">d_z</span>
-            <span class="c1"># str_base_z = &quot; &quot; if iz is None else f&quot;Z[:, {iz}] ** {d_z} &quot;</span>
-
+        <span class="k">for</span> <span class="n">z_term</span> <span class="ow">in</span> <span class="n">_monomials_of_degree</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">d_z</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">d_x1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_dx1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-                <span class="n">x1_indices</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="k">if</span> <span class="n">d_x1</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_x1</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">ix1</span> <span class="ow">in</span> <span class="n">x1_indices</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">ix1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="n">term_x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_obs</span><span class="p">)</span>
-                        <span class="c1"># str_X1 = &quot;1 &quot;</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="k">assert</span> <span class="n">X1_exo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                        <span class="n">term_x1</span> <span class="o">=</span> <span class="n">X1_exo</span><span class="p">[:,</span> <span class="n">ix1</span><span class="p">]</span> <span class="o">**</span> <span class="n">d_x1</span>
-                        <span class="c1"># str_X1 = f&quot;X1_exo[:, {ix1}] ** {d_x1} &quot;</span>
-                    <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base_z</span> <span class="o">*</span> <span class="n">term_x1</span><span class="p">)</span>
-                    <span class="c1"># print(f&quot;{iz=}, {d_z=}, {ix1=}, {d_x1=}&quot;)</span>
-                    <span class="c1"># print(&quot;    &quot; + str_base_z + &quot; * &quot; + str_X1)</span>
+                <span class="k">for</span> <span class="n">x1_term</span> <span class="ow">in</span> <span class="n">_monomials_of_degree</span><span class="p">(</span><span class="n">effective_X1</span><span class="p">,</span> <span class="n">d_x1</span><span class="p">):</span>
+                    <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z_term</span> <span class="o">*</span> <span class="n">x1_term</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
