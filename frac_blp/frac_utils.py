@@ -6,6 +6,24 @@ import numpy as np
 from scipy import linalg as spla
 
 
+def mnl_probabilities(u: np.ndarray, outside: bool = False) -> np.ndarray:
+    """Return the MNL probabilities for utilities u.
+
+    Args:
+        u: A 1D array of J utilities for each alternative
+        outside: If True, include the outside option with utility 0
+
+    Returns: the probabilities `exp(u) / sum(exp(u))` or,
+     if `outside` is True, `exp(u) / (1 + sum(exp(u)))`
+    """
+    u = np.asarray(u)
+    u_max = np.max(u)
+    exp_u = np.exp(u - u_max)
+    if outside:
+        return np.asarray(exp_u / (np.exp(-u_max) + np.sum(exp_u)))
+    return np.asarray(exp_u / np.sum(exp_u))
+
+
 def make_X(X_exo: np.ndarray | None, X_endo: np.ndarray | None) -> np.ndarray:
     """
     Combine exogenous and endogenous regressors into a single regressor matrix.
