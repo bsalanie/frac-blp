@@ -19,40 +19,36 @@ The package estimates a second-order approximation to the macro BLP model with r
 
 The user should be familiar with the macro BLP model (Berry, Levinsohn, and Pakes, 1995). We use very similar notation to that of Conlon and Gortmaker in their `pyblp` package.
 
+#### inputs
 The inputs are:
 
 * `T`: the number of markets 
 * `J`: the number of products per market
 
-The data must contain `N=T*J` observations, corresponding to all products in all markets.
-The observations should be ordered by market, i.e., the first `J` rows correspond to market 1, the next `J` rows to market 2, etc.
+The data must contain $N=T \times J$ observations, corresponding to all products in all markets. **The observations should be ordered by market**, i.e., the first `J` rows correspond to market 1, the next `J` rows to market 2, etc.
 
 The user must provide the following data matrices:
 
-* `Z`: a matrix of instruments, to which the program will add a constant
+* `Z`: an $(N,n_Z)$  matrix of instruments, to which the program will add a constant.
 * `shares`: a `N`-vector of market shares.
-* the regressors as a Pandas data frame with `N` rows. The program will construct the following Numpy matrices from the data frame:
+* the regressors as a Pandas data frame with `N` rows, along with four lists of strings `names_X1_exo, names_X1_endo, names_X2_exo`, and `names_X2_endo`. The program will construct the following Numpy matrices from the data frame:
   
   * `X1_exo`, the matrix of exogenous variables with fixed coefficients, using the column names in `names_X1_exo`
   * `X1_endo`, the matrix of endogenous variables with fixed coefficients, using the column names in `names_X1_endo`
   * `X2_exo`, the matrix of exogenous variables with fixed coefficients, using the column names in `names_X2_exo`
   * `X1_endo`, the matrix of endogenous variables with fixed coefficients, using the column names in `names_X2_endo`.
 
-`names_X1_exo, names_X1_endo, names_X2_exo, names_X2_endo` are lists of strings provided by the user with the names of the columns in the data frame corresponding to each of these four types of variables.
-
-A constant term will not be added automatically, so if desired the user must include a column of ones in `X1_exo` and/or `X2_exo`.
-
-
-
 **`X2_exo` must be a subset of `X1_exo`, and `X2_endo` must be a subset of `X1_endo` (i.e., all variables with random coefficients must also have fixed coefficients). Any of these four matrices can be `None` if there are no variables of that type.**
 
+**A constant term will not be added automatically**. If one is desired, the user must include a column of ones in `X1_exo`,  and in `X2_exo` if the coefficient of the constant is random.
 
 
+
+#### outputs
 The outputs are:
 
 * `betas`: the estimates on the variables with fixed coefficients `X1_exo`, `X1_endo` and the mean coefficients on the variables with random coefficients `X2_exo`, `X2_endo`, in that order.
-* `sigmas`: the standard deviations of the coefficients on the variables with random coefficients `X2_exo` and `X2_endo`, in that order.
-
+* `sigmas`: the standard deviations of the random coefficients on the variables in `X2_exo` and `X2_endo`, in that order.
 
 
 #### entering the data
@@ -65,7 +61,7 @@ frac data = FracNodemogRealData(T, J,
                             names_X1_endo,
                             names_X2_exo,
                             names_X2_endo,
-                            df_X1, 
+                            df, 
                             Z, 
                             shares,
                             )
@@ -76,12 +72,16 @@ from frac_blp.frac_nodemog import estimate
 
 betabar, sigmas = frac nodemog estimate(frac data)
 ```
+#### options
 `frac_demog_estimate` also has optional arguments to define the combinations of instruments and exogeneous variables to be used in the first stage:
 
-* if `degree_Z=d` is provided, then all interactions of the columns of `Z` up to degree `d` will be used as instruments. 
-* if `degree_X1=d'` is provided, then all interactions of the columns of `X1_exo` up to degree `d'` will also be used, on their own and multiplied by the interactions of `Z`.
+* if `degree_Z=d` is provided, then all interactions of the $n_Z$ columns of `Z` up to degree `d`, plus the constant,  will be used as instruments.  This gives ${n_Z+d\choose d}$ instruments.
+* if `degree_X1=d'` is provided, then all interactions of the $n_{1x}$ columns of `X1_exo` up to degree `d'` will also be used, on their own and multiplied by the interactions of `Z` up to degree `d`. That gives an additional $({n_Z+d\choose d}-1)\times ({n_{1x}+d^\prime\choose d^\prime}-1)+1$ instruments.
 
-The default has `degree_Z=2` and `degree_X1=2`.
+The default has `degree_Z=2` and `degree_X1=2`; the total number of instruments then is:
+$$
+\frac{(n_{1x}+1)(n_{1x}+2)}{2} \times \left(\frac{(n_{Z}+1)(n_{Z}+2)}{2}-1\right).
+$$
 
 ### Release notes
 
