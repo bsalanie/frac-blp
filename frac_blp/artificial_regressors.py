@@ -5,6 +5,7 @@ from typing import cast
 import numpy as np
 from bs_python_utils.bsnputils import TwoArrays
 
+from frac_blp.frac_utils import proj_Z_full
 
 def make_this_K(X2: np.ndarray, shares: np.ndarray) -> np.ndarray:
     """

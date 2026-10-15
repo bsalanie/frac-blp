@@ -10,7 +10,7 @@ from typing import Any
 
 import numpy as np
 
-from frac_blp.expansions import xi_terms
+from frac_blp.frac_expansions import xi_terms
 from frac_blp.frac_utils import mnl_probabilities
 
 

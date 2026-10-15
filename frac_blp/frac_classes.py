@@ -16,24 +16,23 @@ Conventions:
 """
 
 from __future__ import annotations
+
+from textwrap import dedent
 from typing import cast
 
 import numpy as np
 import pandas as pd
-
+from bs_python_utils.bs_sparse_gaussian import setup_sparse_gaussian
+from bs_python_utils.bsutils import print_stars
 from pydantic import (
     BaseModel,
     ConfigDict,
+    PrivateAttr,
+    ValidationError,
     computed_field,
     field_validator,
     model_validator,
-    PrivateAttr,
-    ValidationError,
 )
-from textwrap import dedent
-
-from bs_python_utils.bsutils import print_stars
-from bs_python_utils.bs_sparse_gaussian import setup_sparse_gaussian
 
 from frac_blp.frac_utils import make_X
 
@@ -117,7 +116,7 @@ class _FracNoDemogBase(BaseModel):
         return self.T * self.J
 
     @model_validator(mode="after")
-    def _validate_names_subsets(self) -> "_FracNoDemogBase":
+    def _validate_names_subsets(self) -> _FracNoDemogBase:
         # names_X2_exo must be a sublist of names_X1_exo
         missing_exo = [n for n in self.names_X2_exo if n not in self.names_X1_exo]
         if missing_exo:
@@ -276,7 +275,7 @@ class FracNoDemogRealData(_FracNoDemogBase):
         return shares
 
     @model_validator(mode="after")
-    def _validate_shares(self) -> "FracNoDemogRealData":
+    def _validate_shares(self) -> FracNoDemogRealData:
         shares = self.shares
         if shares.ndim != 1:
             raise ValueError("shares must be a 1D array.")
@@ -378,7 +377,7 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
         return float(v)
 
     @model_validator(mode="after")
-    def _validate_betas_length(self) -> "FracNoDemogSimulatedData":
+    def _validate_betas_length(self) -> FracNoDemogSimulatedData:
         if self.betas.ndim != 1:
             raise ValueError("betas must be a 1D array.")
         if self.betas.shape[0] != self.n_X1:
@@ -388,7 +387,7 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
         return self
 
     @model_validator(mode="after")
-    def _validate_sigmas_length(self) -> "FracNoDemogSimulatedData":
+    def _validate_sigmas_length(self) -> FracNoDemogSimulatedData:
         expected_n2 = int(self.n_X2_exo) + int(self.n_X2_endo)
         if self.sigmas.ndim != 1:
             raise ValueError("sigmas must be a 1D array.")

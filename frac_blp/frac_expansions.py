@@ -57,9 +57,3 @@ def xi_terms(
     term4_gaussian = -np.einsum("lm,jl,jm->jlm", v, X, X / 2.0 - e1)
 
     return term0, term2, term3, term4_gaussian, term4_kappa
-
-
-# def xi_expansion(S, X, b, sigma, c, s, kappa, order=4):
-#     terms = xi_terms(S, X, b, sigma, c, s, kappa)
-#     keep = {0: 1, 1: 1, 2: 2, 3: 3, 4: 4}[order]
-#     return sum(terms[:keep])

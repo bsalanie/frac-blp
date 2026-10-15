@@ -2,15 +2,16 @@
 FRAC estimation on macro-BLP, without demographics
 """
 
+from typing import cast
+
 import numpy as np
 import scipy.linalg as spla
-
-from bs_python_utils.bsutils import print_stars, bs_error_abort
 from bs_python_utils.bsnputils import TwoArrays
+from bs_python_utils.bsutils import bs_error_abort, print_stars
 
-from frac_blp.frac_classes import FracNoDemogData, FracNoDemogSimulatedData
-from frac_blp.frac_utils import proj_Z_full, make_Z_full
 from frac_blp.artificial_regressors import make_K_and_y
+from frac_blp.frac_classes import FracNoDemogData, FracNoDemogSimulatedData
+from frac_blp.frac_utils import make_Z_full, proj_Z_full
 
 
 def frac_nodemog_estimate(
@@ -68,7 +69,7 @@ def frac_nodemog_estimate(
 
     # run the second stage
     RHS_proj = np.column_stack((X1_hat, K_hat))
-    betas_sigmas_est = spla.lstsq(RHS_proj, y_hat[:, 0])[0]
+    betas_sigmas_est = cast(np.ndarray, spla.lstsq(RHS_proj, y_hat[:, 0])[0])
     betas_est = betas_sigmas_est[:n_X1]
     sigmas_squared_est = betas_sigmas_est[n_X1:]
     if np.min(sigmas_squared_est) < 0.0:

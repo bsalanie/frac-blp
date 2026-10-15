@@ -87,7 +87,7 @@ def make_Z_full(
     if degree_Z < 0:
         raise ValueError("degree_Z must be non-negative.")
 
-    n_obs, n_z = Z.shape
+    n_obs = Z.shape[0]
     effective_X1 = X1_exo if X1_exo is not None else np.ones((n_obs, 1))
     max_dx1 = degree_X1 if X1_exo is not None else 0
 
