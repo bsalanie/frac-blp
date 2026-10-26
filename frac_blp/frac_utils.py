@@ -1,6 +1,7 @@
 """Utility helpers for building instruments and projections in FRAC."""
 
 from itertools import combinations_with_replacement
+from typing import cast
 
 import numpy as np
 from scipy import linalg as spla
@@ -47,6 +48,24 @@ def make_X(X_exo: np.ndarray | None, X_endo: np.ndarray | None) -> np.ndarray:
     else:
         raise ValueError("At least one of X_exo or X_endo must be provided.")
     return X
+
+
+def make_y(shares: np.ndarray, J: int) -> np.ndarray:
+    """
+    Create the dependent variable vector for FRAC estimation.
+
+    Args:
+        shares (np.ndarray): Market shares for each alternative.
+        J (int): Number of alternatives.
+
+    Returns:
+        np.ndarray: The dependent variable vector reshaped to (n_obs, 1).
+    """
+    n_markets = shares.shape[0] // J
+    shares_mat = shares.reshape((n_markets, J))
+    shares_zero = shares_mat.sum(axis=1)
+    y = np.log(shares_mat / shares_zero.reshape((-1, 1)))
+    return cast(np.ndarray, y)
 
 
 def _monomials_of_degree(mat: np.ndarray, d: int) -> list[np.ndarray]:
@@ -130,3 +149,18 @@ def proj_Z_full(
         var_x = np.var(x)
         r2[ix] = 1.0 if var_x < EPS else np.var(x_proj) / var_x
     return X_proj, coef, r2
+
+
+def make_centered_covariance(X: np.ndarray) -> np.ndarray:
+    """
+    Compute the centered covariance matrix of a given matrix.
+
+    Args:
+        X (np.ndarray): Input matrix with shape (n_samples, n_features).
+
+    Returns:
+        np.ndarray: Centered covariance matrix with shape (n_features, n_features).
+    """
+    n_samples = X.shape[0]
+    X_centered = X - np.mean(X, axis=0)
+    return cast(np.ndarray, (X_centered.T @ X_centered) / n_samples)

@@ -9,9 +9,8 @@ import scipy.linalg as spla
 from bs_python_utils.bsnputils import TwoArrays
 from bs_python_utils.bsutils import bs_error_abort, print_stars
 
-from frac_blp.artificial_regressors import make_K_and_y
 from frac_blp.frac_classes import FracNoDemogData, FracNoDemogSimulatedData
-from frac_blp.frac_utils import make_Z_full, proj_Z_full
+from frac_blp.frac_utils import make_y, make_Z_full, proj_Z_full
 
 
 def frac_nodemog_estimate(
@@ -40,7 +39,8 @@ def frac_nodemog_estimate(
     names_X1 = frac_data.names_X1
     names_X2 = frac_data.names_X2
     shares = frac_data.shares
-    K, y = make_K_and_y(X2, shares, J)
+    y = make_y(shares, J)
+    K = X2
     K = K.astype(np.float64)
     y = y.astype(np.float64)
     n_X1 = X1.shape[1]
