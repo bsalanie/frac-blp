@@ -28,6 +28,7 @@ def frac_nodemog_estimate(
         degree_X1 (int): Degree of polynomial expansion for exogenous regressors in X1.
             Default is 2.
         run_projections (bool): If True, print the R-squared values of the first-stage
+            projections on the instruments. Default is True.
 
     Returns:
         TwoArrays: Tuple ``(betas_sigmas_est, stderrs_est)`` with fixed and random coefficient
@@ -128,4 +129,4 @@ if __name__ == "__main__":
     )
     print(frac_data)
 
-    betas_sigmas_est, stderrs__est = frac_nodemog_estimate(frac_data)
+    betas_sigmas_est, stderrs_est = frac_nodemog_estimate(frac_data)
