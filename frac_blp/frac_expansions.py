@@ -23,20 +23,27 @@ import numpy as np
 def xi_terms(
     S: np.ndarray,
     X: np.ndarray,
-    b: np.ndarray,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Return the successive terms of the expansion of xi on one market.
 
-    xi = term0 - term2 * sigmas^2 - term3 * s *  sigmas^3
+    xi = y - X*b - term2 * sigmas^2 - term3 * s *  sigmas^3
         - (sigmas^2)' * term4_gaussian * sigmas^2 - term4_kappa * sigmas^4 + O(sigmas^5)
+
+    Args:
+        S: J-vector of inside shares
+        X: J x K matrix of characteristics
+
+
+    Returns:
+        term2: J x K matrix of order 2 terms
+        term3: J x K matrix of order 3 terms
+        term4_gaussian: J x K x K array of order 4 terms from Gaussian
+        term4_kappa: J x K matrix of order 4 terms from excess kurtosis
     """
-    S0 = 1.0 - S.sum()
     X2 = X * X
     X3 = X2 * X
     e1, e2, e3 = S @ X, S @ X2, S @ X3
     v = np.einsum("j,jl,jm->lm", S, X, X) - np.outer(e1, e1)
-
-    term0 = np.log(S / S0) - X @ b
 
     # order 2:  sum_l (sigma^2_l * term2_l)
     term2 = X * (X / 2.0 - e1)
@@ -56,4 +63,4 @@ def xi_terms(
     )
     term4_gaussian = -np.einsum("lm,jl,jm->jlm", v, X, X / 2.0 - e1)
 
-    return term0, term2, term3, term4_gaussian, term4_kappa
+    return term2, term3, term4_gaussian, term4_kappa

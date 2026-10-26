@@ -2,21 +2,21 @@
 FRAC estimation on macro-BLP, without demographics
 """
 
-from typing import cast
-
 import numpy as np
-import scipy.linalg as spla
 from bs_python_utils.bsnputils import TwoArrays
 from bs_python_utils.bsutils import bs_error_abort, print_stars
 
 from frac_blp.frac_classes import FracNoDemogData, FracNoDemogSimulatedData
-from frac_blp.frac_utils import make_y, make_Z_full, proj_Z_full
+from frac_blp.frac_expansions import xi_terms
+from frac_blp.frac_utils import make_y, make_Z_full, proj_on_Z
+from frac_blp.twosls import print_tsls_results, tsls_estimate
 
 
 def frac_nodemog_estimate(
     frac_data: FracNoDemogData,
     degree_Z: int = 2,
     degree_X1: int = 2,
+    run_projections: bool = True,
 ) -> TwoArrays:
     """
     Estimate FRAC parameters without demographics using two-stage least squares.
@@ -27,22 +27,31 @@ def frac_nodemog_estimate(
         degree_Z (int): Degree of polynomial expansion for instruments. Default is 2.
         degree_X1 (int): Degree of polynomial expansion for exogenous regressors in X1.
             Default is 2.
+        run_projections (bool): If True, print the R-squared values of the first-stage
 
     Returns:
-        TwoArrays: Tuple ``(betas_est, sigmas_est)`` with fixed and random coefficient
-        estimates, respectively.
+        TwoArrays: Tuple ``(betas_sigmas_est, stderrs_est)`` with fixed and random coefficient
+        estimates and their estimated standard errors.
     """
     X1_exo = frac_data.X1_exo
     X1, X2 = frac_data.X1.astype(np.float64), frac_data.X2.astype(np.float64)
-    J = frac_data.J
+    J, T = frac_data.J, frac_data.T
     Z = frac_data.Z
     names_X1 = frac_data.names_X1
     names_X2 = frac_data.names_X2
     shares = frac_data.shares
+
     y = make_y(shares, J)
-    K = X2
-    K = K.astype(np.float64)
-    y = y.astype(np.float64)
+    K = np.zeros_like(X2)
+
+    tJ = 0
+    for t in range(T):
+        shares_t = shares[tJ : (tJ + J)]
+        X2_t = X2[t * J : (t + 1) * J, :]
+        term2, term3, term4_gaussian, term4_kappa = xi_terms(shares_t, X2_t)
+        K[tJ : (tJ + J), :] = term2
+        tJ += J
+
     n_X1 = X1.shape[1]
     n_X2 = X2.shape[1]
 
@@ -51,46 +60,58 @@ def frac_nodemog_estimate(
         np.float64
     )
 
-    # project on the full set of instruments
-    y_hat, _, r2_y = proj_Z_full(y.reshape((frac_data.n_obs, 1)), Z_full)
-    K_hat, _, r2_K = proj_Z_full(K, Z_full)
-    X1_hat, _, r2_X1 = proj_Z_full(X1, Z_full)
+    if run_projections:
+        # project on the full set of instruments
+        _, _, r2_y = proj_on_Z(y.reshape((frac_data.n_obs, 1)), Z_full)
+        _, _, r2_K = proj_on_Z(K, Z_full)
+        _, _, r2_X1 = proj_on_Z(X1, Z_full)
 
-    # breakpoint()
-    print_stars(
-        f"The first stage R2s of projecting on the full set of {Z_full.shape[1]} instruments are:"
+        print_stars(
+            f"The first stage R2s of projecting on the full set of {Z_full.shape[1]} instruments are:"
+        )
+        print(f"    for y: {r2_y[0]:.3f}")
+        for ix in range(n_X1):
+            print(f"     for {names_X1[ix]}: {r2_X1[ix]:.3f}")
+        for ix in range(n_X2):
+            print(f"     for K_{names_X2[ix]}: {r2_K[ix]:.3f}")
+        print("\n")
+
+    # combine covariates and artificial regressors
+    X = np.column_stack((X1, K))
+
+    # run TSLS
+    print_stars("Running TSLS...")
+    betas_sigmas_est, beta_sigmas_varest, xi_est = tsls_estimate(
+        y,
+        X,
+        Z_full,
+        J,
+        prev_residuals=None,
     )
-    print(f"    for y: {r2_y[0]:.3f}")
-    for ix in range(n_X1):
-        print(f"     for {names_X1[ix]}: {r2_X1[ix]:.3f}")
-    for ix in range(n_X2):
-        print(f"     for K_{names_X2[ix]}: {r2_K[ix]:.3f}")
-    print("\n")
-
-    # run the second stage
-    RHS_proj = np.column_stack((X1_hat, K_hat))
-    betas_sigmas_est = cast(np.ndarray, spla.lstsq(RHS_proj, y_hat[:, 0])[0])
     betas_est = betas_sigmas_est[:n_X1]
     sigmas_squared_est = betas_sigmas_est[n_X1:]
     if np.min(sigmas_squared_est) < 0.0:
         print_stars("\n The variance estimates are")
         print(sigmas_squared_est)
         bs_error_abort("We have a negative variance estimate!")
-    sigmas_est = np.sqrt(sigmas_squared_est)
 
-    print_stars("The final estimates are:")
-    for i in range(len(names_X1)):
-        print(f"   beta1_{names_X1[i]}: {betas_est[i]:.3f}")
-    for i in range(len(names_X2)):
-        print(f"   sigma_{names_X2[i]}: {sigmas_est[i]:.3f}")
-    return betas_est, sigmas_est
+    stderrs_est = np.sqrt(np.diag(beta_sigmas_varest))
+
+    print_tsls_results(
+        betas_sigmas_est,
+        stderrs_est,
+        names_coeffs=names_X1 + ["sigma_" + name for name in names_X2],
+        title="The FRAC second-order estimates are:",
+    )
+
+    return betas_sigmas_est, stderrs_est
 
 
 if __name__ == "__main__":
-    T = 50
-    J = 20
+    T = 100
+    J = 100
     n_obs = T * J
-    betas = np.array([-4.3, 1.0])
+    betas = np.array([-4.3, 2.0])
     sigma = 1.0
     names_X1 = ["constant", "x"]
     names_X2 = ["x"]
@@ -107,4 +128,4 @@ if __name__ == "__main__":
     )
     print(frac_data)
 
-    betas_est, sigmas_est = frac_nodemog_estimate(frac_data)
+    betas_sigmas_est, stderrs__est = frac_nodemog_estimate(frac_data)

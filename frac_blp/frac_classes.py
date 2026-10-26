@@ -18,7 +18,7 @@ Conventions:
 from __future__ import annotations
 
 from textwrap import dedent
-from typing import cast
+from typing import Any, cast
 
 import numpy as np
 import pandas as pd
@@ -191,12 +191,12 @@ class _FracNoDemogBase(BaseModel):
     @computed_field(return_type=int)  # type: ignore[misc]
     @property
     def n_X1(self) -> int:
-        return cast(int, self.n_X1_exo + self.n_X1_endo)
+        return self.n_X1_exo + self.n_X1_endo
 
     @computed_field(return_type=int)  # type: ignore[misc]
     @property
     def n_X2(self) -> int:
-        return cast(int, self.n_X2_exo + self.n_X2_endo)
+        return self.n_X2_exo + self.n_X2_endo
 
 
 class FracNoDemogRealData(_FracNoDemogBase):
@@ -228,22 +228,22 @@ class FracNoDemogRealData(_FracNoDemogBase):
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
     @property
     def X1_exo(self) -> np.ndarray:
-        return cast(np.ndarray, self.get_X_by_names("names_X1_exo"))
+        return self.get_X_by_names("names_X1_exo")
 
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
     @property
     def X1_endo(self) -> np.ndarray:
-        return cast(np.ndarray, self.get_X_by_names("names_X1_endo"))
+        return self.get_X_by_names("names_X1_endo")
 
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
     @property
     def X2_exo(self) -> np.ndarray:
-        return cast(np.ndarray, self.get_X_by_names("names_X2_exo"))
+        return self.get_X_by_names("names_X2_exo")
 
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
     @property
     def X2_endo(self) -> np.ndarray:
-        return cast(np.ndarray, self.get_X_by_names("names_X2_endo"))
+        return self.get_X_by_names("names_X2_endo")
 
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
     @property
@@ -477,8 +477,8 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
                     + root2 * rng.normal(0.0, 1.0, size=n_obs)
                 )
             )
-        X_mat = make_X(X1_exo, X1_endo)
-        df_X = pd.DataFrame(X_mat, columns=self.names_X1)
+        X_mat: np.ndarray[tuple[Any, ...], np.dtype[Any]] = make_X(X1_exo, X1_endo)
+        df_X = pd.DataFrame(X_mat, columns=np.array(self.names_X1))
         # print(df_X.head())
         self._X_cache = df_X
         return self._X_cache

@@ -65,7 +65,7 @@ def make_y(shares: np.ndarray, J: int) -> np.ndarray:
     shares_mat = shares.reshape((n_markets, J))
     shares_zero = shares_mat.sum(axis=1)
     y = np.log(shares_mat / shares_zero.reshape((-1, 1)))
-    return cast(np.ndarray, y)
+    return cast(np.ndarray, y.reshape(shares.shape))
 
 
 def _monomials_of_degree(mat: np.ndarray, d: int) -> list[np.ndarray]:
@@ -120,30 +120,31 @@ def make_Z_full(
     return np.column_stack(columns)
 
 
-def proj_Z_full(
-    X: np.ndarray, Z_full: np.ndarray
+def proj_on_Z(
+    X: np.ndarray, Z: np.ndarray
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
-    Project each column of ``X`` onto ``Z_full`` and report fitted values.
+    Project each column of ``X`` onto ``Z`` and report fitted values.
 
     Args:
-        X (np.ndarray): Variables to project.
-        Z_full (np.ndarray): Instrument matrix used for the projections.
+        X (np.ndarray): Variables to project, a (n, K) matrix
+        Z (np.ndarray): Instrument matrix used for the projections, a (n,L) matrix
 
     Returns:
-        tuple[np.ndarray, np.ndarray, np.ndarray]: ``X_proj`` with projected columns,
-        ``coef`` with least-squares coefficients, and ``r2`` with column-wise
-        R-squared values.
+        tuple[np.ndarray, np.ndarray, np.ndarray]:
+        an (n,K)  matrix ``X_proj`` with projected columns,
+        a (L,K) matrix ``coef`` with least-squares coefficients,
+        and a K-vector ``r2`` with column-wise R-squared values.
     """
     EPS = 1e-12
     n_x = X.shape[1]
     X_proj = np.empty(X.shape)
-    coef = np.empty((Z_full.shape[1], n_x))
+    coef = np.empty((Z.shape[1], n_x))
     r2 = np.empty(n_x)
     for ix in range(n_x):
         x = X[:, ix]
-        coef_x = spla.lstsq(Z_full, x)[0]
-        x_proj = Z_full @ coef_x
+        coef_x = spla.lstsq(Z, x)[0]
+        x_proj = Z @ coef_x
         X_proj[:, ix] = x_proj
         coef[:, ix] = coef_x
         var_x = np.var(x)
@@ -163,4 +164,5 @@ def make_centered_covariance(X: np.ndarray) -> np.ndarray:
     """
     n_samples = X.shape[0]
     X_centered = X - np.mean(X, axis=0)
+    print(f"make_centered_covariance: {X.shape=}, {n_samples=}, {X_centered.shape=}")
     return cast(np.ndarray, (X_centered.T @ X_centered) / n_samples)
