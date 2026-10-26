@@ -479,7 +479,7 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
             )
         X_mat = make_X(X1_exo, X1_endo)
         df_X = pd.DataFrame(X_mat, columns=self.names_X1)
-        print(df_X.head())
+        # print(df_X.head())
         self._X_cache = df_X
         return self._X_cache
 

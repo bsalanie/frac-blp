@@ -105,5 +105,6 @@ if __name__ == "__main__":
         betas=betas,
         sigmas=np.array([sigma]),
     )
+    print(frac_data)
 
     betas_est, sigmas_est = frac_nodemog_estimate(frac_data)

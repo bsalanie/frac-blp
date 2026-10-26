@@ -96,3 +96,16 @@ Improved README.
 
 #### 0.1 (October 26, 2025)
 First working version, no demographics.
+
+
+### TODO October 18, 2026
+#### optimal instruments
+For $E(\rho(\theta_0)\vert z)=0$ we use $\hat{E} D^\prime(z) \Omega(z)^{-1}\rho(\theta)=0$ with $D(z)=E(\nabla_\theta\rho(\theta_0)\vert z)$ and $\Omega(z)=E(\rho(\theta_0)\rho(\theta_0)^\prime\vert z)$.
+
+The variance of $\hat\theta$ is $\left(D^\prime\Omega^{-1}D\right)^{-1}$.
+
+#### possible steps
+1. regress $y$ on $E(X\vert Z)$ and $E(K\vert Z)$ with $\Omega_1=\text{Id}$, get the residual $\hat{\xi}$
+2. then do it again with $\Omega_2=\hat{E}(Z^\prime\hat{\xi}\hat{xi}^\prime Z)$
+3. do up to 4th order with $E(X\vert Z)$ and $E(K_l+\sum_m W_{lm} \hat{\sigma}^2_m$ and $E(T_3\vert Z)$ and $E(T_4^\kappa\vert Z)$ and $\Omega_2$. This should give estimates of all 4 moments.
+4. update $\Omega$ and the optimal instruments and run again (and perhaps again).
