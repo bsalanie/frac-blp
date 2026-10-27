@@ -1,6 +1,4 @@
-"""
-FRAC estimation on macro-BLP, without demographics
-"""
+"""FRAC estimation on macro-BLP, without demographics."""
 
 import numpy as np
 from bs_python_utils.bsnputils import TwoArrays
@@ -16,6 +14,7 @@ def frac_nodemog_estimate(
     frac_data: FracNoDemogData,
     degree_Z: int = 2,
     degree_X1: int = 2,
+    optimal_instruments: bool = True,
     run_projections: bool = True,
 ) -> TwoArrays:
     """
@@ -27,12 +26,17 @@ def frac_nodemog_estimate(
         degree_Z (int): Degree of polynomial expansion for instruments. Default is 2.
         degree_X1 (int): Degree of polynomial expansion for exogenous regressors in X1.
             Default is 2.
+        optimal_instruments (bool): If True, use optimal instruments. Default is True.
         run_projections (bool): If True, print the R-squared values of the first-stage
             projections on the instruments. Default is True.
 
     Returns:
-        TwoArrays: Tuple ``(betas_sigmas_est, stderrs_est)`` with fixed and random coefficient
-        estimates and their estimated standard errors.
+        TwoArrays: Tuple ``(betas_sigmas_est, stderrs_est)``: the estimated fixed
+        coefficients followed by the estimated variances of the random coefficients,
+        and their standard errors.
+
+    Raises:
+        SystemExit: If one of the estimated variances is negative.
     """
     X1_exo = frac_data.X1_exo
     X1, X2 = frac_data.X1.astype(np.float64), frac_data.X2.astype(np.float64)
@@ -87,9 +91,9 @@ def frac_nodemog_estimate(
         X,
         Z_full,
         J,
+        optimal_instruments,
         prev_residuals=None,
     )
-    betas_est = betas_sigmas_est[:n_X1]
     sigmas_squared_est = betas_sigmas_est[n_X1:]
     if np.min(sigmas_squared_est) < 0.0:
         print_stars("\n The variance estimates are")
@@ -101,7 +105,7 @@ def frac_nodemog_estimate(
     print_tsls_results(
         betas_sigmas_est,
         stderrs_est,
-        names_coeffs=names_X1 + ["sigma_" + name for name in names_X2],
+        names_coeffs=names_X1 + ["sigma2_" + name for name in names_X2],
         title="The FRAC second-order estimates are:",
     )
 
@@ -129,4 +133,6 @@ if __name__ == "__main__":
     )
     print(frac_data)
 
-    betas_sigmas_est, stderrs_est = frac_nodemog_estimate(frac_data)
+    betas_sigmas_est, stderrs_est = frac_nodemog_estimate(
+        frac_data, optimal_instruments=False, run_projections=True
+    )

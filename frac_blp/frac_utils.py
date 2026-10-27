@@ -11,11 +11,12 @@ def mnl_probabilities(u: np.ndarray, outside: bool = False) -> np.ndarray:
     """Return the MNL probabilities for utilities u.
 
     Args:
-        u: A 1D array of J utilities for each alternative
-        outside: If True, include the outside option with utility 0
+        u (np.ndarray): Utilities of the J alternatives, a 1D array.
+        outside (bool): If True, include an outside option with utility 0.
 
-    Returns: the probabilities `exp(u) / sum(exp(u))` or,
-     if `outside` is True, `exp(u) / (1 + sum(exp(u)))`
+    Returns:
+        np.ndarray: The J probabilities ``exp(u) / sum(exp(u))`` or, if
+        ``outside`` is True, ``exp(u) / (1 + sum(exp(u)))``.
     """
     u = np.asarray(u)
     u_max = np.max(u)
@@ -55,15 +56,16 @@ def make_y(shares: np.ndarray, J: int) -> np.ndarray:
     Create the dependent variable vector for FRAC estimation.
 
     Args:
-        shares (np.ndarray): Market shares for each alternative.
-        J (int): Number of alternatives.
+        shares (np.ndarray): Market shares, a (T*J,) vector stacked by market.
+        J (int): Number of products in each market.
 
     Returns:
-        np.ndarray: The dependent variable vector reshaped to (n_obs, 1).
+        np.ndarray: The log of each share divided by the outside share
+        of its market, with the same shape as ``shares``.
     """
     n_markets = shares.shape[0] // J
     shares_mat = shares.reshape((n_markets, J))
-    shares_zero = shares_mat.sum(axis=1)
+    shares_zero = 1.0 - shares_mat.sum(axis=1)
     y = np.log(shares_mat / shares_zero.reshape((-1, 1)))
     return cast(np.ndarray, y.reshape(shares.shape))
 
@@ -127,14 +129,13 @@ def proj_on_Z(
     Project each column of ``X`` onto ``Z`` and report fitted values.
 
     Args:
-        X (np.ndarray): Variables to project, a (n, K) matrix
-        Z (np.ndarray): Instrument matrix used for the projections, a (n,L) matrix
+        X (np.ndarray): Variables to project, an (n, K) matrix.
+        Z (np.ndarray): Instruments used for the projections, an (n, L) matrix.
 
     Returns:
-        tuple[np.ndarray, np.ndarray, np.ndarray]:
-        an (n,K)  matrix ``X_proj`` with projected columns,
-        a (L,K) matrix ``coef`` with least-squares coefficients,
-        and a K-vector ``r2`` with column-wise R-squared values.
+        tuple[np.ndarray, np.ndarray, np.ndarray]: ``X_proj``, an (n, K) matrix
+        of projected columns; ``coef``, an (L, K) matrix of least-squares
+        coefficients; and ``r2``, a K-vector of column-wise R-squared values.
     """
     EPS = 1e-12
     n_x = X.shape[1]
@@ -164,5 +165,4 @@ def make_centered_covariance(X: np.ndarray) -> np.ndarray:
     """
     n_samples = X.shape[0]
     X_centered = X - np.mean(X, axis=0)
-    print(f"make_centered_covariance: {X.shape=}, {n_samples=}, {X_centered.shape=}")
     return cast(np.ndarray, (X_centered.T @ X_centered) / n_samples)

@@ -11,22 +11,28 @@ def tsls_estimate(
     X: np.ndarray,
     Z: np.ndarray,
     J: int,
+    optimal_instruments: bool = True,
     prev_residuals: np.ndarray | None = None,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
-    Run two-stage least squares on $E(y-X\theta|Z) = 0$ with optimal instruments and weighting matrix.
+    Estimate $E(y - X\theta | Z) = 0$ by 2SLS with optimal instruments and weighting matrix.
+
+    The previous residuals are used to estimate the within-market covariance
+    of the errors, which gives the optimal instruments and the weighting matrix.
 
     Args:
-        y (np.ndarray): Dependent variable, a T*J vector
-        X (np.ndarray): Regressors, a (T*J, K) matrix
-        Z (np.ndarray): Instruments, a (T*J,L) matrix
-        J (int): the number of products.
-        prev_residuals: Previous residuals, a T*J vector. If None, OLS residuals are used.
+        y (np.ndarray): Dependent variable, a (T*J,) vector.
+        X (np.ndarray): Regressors, a (T*J, K) matrix.
+        Z (np.ndarray): Instruments, a (T*J, L) matrix.
+        J (int): Number of products in each market.
+        optimal_instruments (bool): If True, use optimal instruments. Default is True.
+        prev_residuals (np.ndarray | None): Previous residuals, a (T*J,) vector.
+            If None, the OLS residuals of ``y`` on ``X`` are used.
 
     Returns:
-        tuple[np.ndarray, np.ndarray, np.ndarray]: Tuple containing
-          the estimated coefficients,
-          their estimated variance, and the new estimated residuals.
+        tuple[np.ndarray, np.ndarray, np.ndarray]: The estimated coefficients
+        (a K-vector), their estimated variance (a (K, K) matrix), and the new
+        residuals (a (T*J,) vector).
     """
     if prev_residuals is None:  # we use the OLS residuals
         ols_est = np.linalg.lstsq(X, y, rcond=None)[0]
@@ -38,28 +44,30 @@ def tsls_estimate(
     n_obs, n_x = X.shape
     T = n_obs // J
 
-    # compute an Omega matrix
-    Omega = make_centered_covariance(prev_residuals.reshape((T, J)))
-    print(f"Omega matrix:\n{Omega.shape}\n", f"{D_mat.shape=}")
-    Omega_inv = np.linalg.inv(Omega)
-    # now the optimal instruments
-    Z_opt = np.zeros((n_obs, n_x))
-    tJ = 0
-    for t in range(T):
-        market_t = slice(tJ, tJ + J)
-        Z_opt[market_t, :] = Omega_inv @ D_mat[market_t, :]
-        tJ += J
+    if optimal_instruments:
+        # compute an Omega matrix
+        Omega = make_centered_covariance(prev_residuals.reshape((T, J)))
+        Omega_inv = np.linalg.inv(Omega)
+        # now the optimal instruments
+        Z_opt = np.zeros((n_obs, n_x))
+        tJ = 0
+        for t in range(T):
+            market_t = slice(tJ, tJ + J)
+            Z_opt[market_t, :] = Omega_inv @ D_mat[market_t, :]
+            tJ += J
+    else:
+        Z_opt = D_mat
 
     # and the W weighting matrix
     Z_opt_moments = Z_opt * prev_residuals.reshape((-1, 1))
     W_mat = make_centered_covariance(Z_opt_moments)
+    print(f"{W_mat=}")
     W_inv = np.linalg.pinv(W_mat)
     print(f"{W_inv=}")
 
     ZX = Z_opt.T @ X / T
     ZXT = ZX.T
     Zy = Z_opt.T @ y / T
-    print(f"{ZX.shape=}, {ZXT.shape=}, {Zy.shape=}")
     theta_est = np.linalg.solve(ZXT @ W_inv @ ZX, ZXT @ W_inv @ Zy)
 
     residuals = y - X @ theta_est
@@ -79,9 +87,12 @@ def print_tsls_results(
     Print the estimated coefficients and their standard errors.
 
     Args:
-        estimated_coeffs: Estimated coefficients.
-        estimated_stderrs: Estimated standard errors.
-        names_coeffs: List of coefficient names. Just an index is printed if None.
+        estimated_coeffs (np.ndarray): Estimated coefficients.
+        estimated_stderrs (np.ndarray): Estimated standard errors.
+        names_coeffs (list[str] | None): Coefficient names. If None, the
+            coefficients are labeled ``coeff_0``, ``coeff_1``, ...
+        title (str | None): Header printed above the results. If None,
+            ``"Two-stage least squares estimates:"`` is used.
     """
     n_coeffs = estimated_coeffs.size
     if names_coeffs is None:

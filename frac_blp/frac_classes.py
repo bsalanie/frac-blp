@@ -335,7 +335,9 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
         rho_x_xi (float): Correlation between ``X`` and ``xi`` (in ``[-1, 1]``).
         betas (np.ndarray): Fixed coefficients used for simulation, length ``n_X1``.
         sigmas (np.ndarray): Std. devs of random coefficients, length ``n_X2`` and
-            element-wise nonnegative..
+            element-wise nonnegative.
+        seed (int | None): Seed for the random draws. If None, each instance
+            draws fresh data; otherwise ``xi``, ``Z`` and ``X`` are reproducible.
     """
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -353,6 +355,7 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
     rho_x_xi: float = float(np.sqrt(0.5))
     betas: np.ndarray = np.array([-4.3, 1.0])
     sigmas: np.ndarray = np.array([1.0])
+    seed: int | None = None
 
     @field_validator("T", "J", mode="before")
     @classmethod
@@ -415,6 +418,23 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
             raise ValueError(f"{info.field_name} must be between -1 and 1.")
         return float(v)
 
+    def _rng(self, stream: int) -> np.random.Generator:
+        """Return the random generator for one of the simulated variables.
+
+        Each variable gets its own stream so that its draws do not depend on
+        the order in which the variables are generated.
+
+        Args:
+            stream (int): Index of the variable's stream.
+
+        Returns:
+            np.random.Generator: A generator seeded from ``seed`` and ``stream``,
+            or from fresh entropy if ``seed`` is None.
+        """
+        if self.seed is None:
+            return np.random.default_rng()
+        return np.random.default_rng([self.seed, stream])
+
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
     @property
     def xi_var(self) -> np.ndarray:
@@ -425,7 +445,7 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
         """
         if self._xi_var_cache is not None:
             return self._xi_var_cache
-        rng = np.random.default_rng(seed=None)
+        rng = self._rng(0)
         xi_vals = cast(np.ndarray, rng.normal(0.0, self.sigma_xi, size=self.n_obs))
         self._xi_var_cache = xi_vals
         return self._xi_var_cache
@@ -441,7 +461,7 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
         """
         if self._Z_cache is not None:
             return self._Z_cache
-        rng = np.random.default_rng(seed=None)
+        rng = self._rng(1)
         Z_vals = rng.normal(0.0, 1.0, size=(self.n_obs, self.n_Z))
         Z_full = np.column_stack((np.ones(self.n_obs), Z_vals))
         self._Z_cache = Z_full
@@ -458,7 +478,7 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
         if self._X_cache is not None:
             return self._X_cache
 
-        rng = np.random.default_rng(seed=None)
+        rng = self._rng(2)
         n_obs, sigma_x, sigma_xi = self.n_obs, self.sigma_x, self.sigma_xi
         xi_var, rho_x_z, rho_x_xi = self.xi_var, self.rho_x_z, self.rho_x_xi
         n_X1_exo, n_X1_endo = self.n_X1_exo, self.n_X1_endo

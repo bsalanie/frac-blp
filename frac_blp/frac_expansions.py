@@ -30,15 +30,14 @@ def xi_terms(
         - (sigmas^2)' * term4_gaussian * sigmas^2 - term4_kappa * sigmas^4 + O(sigmas^5)
 
     Args:
-        S: J-vector of inside shares
-        X: J x K matrix of characteristics
-
+        S (np.ndarray): Inside shares on the market, a J-vector.
+        X (np.ndarray): Characteristics with random coefficients, a (J, K) matrix.
 
     Returns:
-        term2: J x K matrix of order 2 terms
-        term3: J x K matrix of order 3 terms
-        term4_gaussian: J x K x K array of order 4 terms from Gaussian
-        term4_kappa: J x K matrix of order 4 terms from excess kurtosis
+        tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]: ``term2``, a (J, K)
+        matrix of order 2 terms; ``term3``, a (J, K) matrix of order 3 terms;
+        ``term4_gaussian``, a (J, K, K) array of Gaussian order 4 terms; and
+        ``term4_kappa``, a (J, K) matrix of order 4 terms from excess kurtosis.
     """
     X2 = X * X
     X3 = X2 * X
