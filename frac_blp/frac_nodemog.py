@@ -125,7 +125,7 @@ if __name__ == "__main__":
     n_X2_endo = n_X1_endo
     n_X2 = n_X2_exo + n_X2_endo
     betas = np.array([-4.3] + [2.0] * (n_X1_exo + n_X1_endo - 1))
-    sigmas = np.array([1.0] * (n_X1_exo + n_X1_endo - 1))
+    sigmas = np.array([0.3] * (n_X1_exo + n_X1_endo - 1))
     names_X1_endo = [f"x_{i}" for i in range(1, n_X1_endo + 1)]
     names_X1 = ["constant"] + names_X1_endo
     names_X2 = names_X1_endo

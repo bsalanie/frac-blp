@@ -468,7 +468,7 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
         Returns:
             np.ndarray: Realizations of ``Z``.
         """
-        n_Z = self.n_X1_endo + 1
+        n_Z = self.n_X1_endo
         if self._Z_cache is not None:
             return self._Z_cache
         rng = self._rng(1)
@@ -593,7 +593,6 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
         X2 = self.X2
         n_X2 = X2.shape[1]
         n_obs = T * J
-        xi_vals = self.xi_var
         mean_utils = X1 @ self.betas + self.xi_var.reshape(n_obs)
         shares = np.zeros(n_obs)
         # Handle the degenerate case n_X2 == 0 (no random coefficients):
@@ -602,10 +601,8 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
             for t in range(T):
                 this_market = slice(t * J, (t + 1) * J)
                 these_mean_utils = mean_utils[this_market]
-                these_xis = xi_vals[this_market]
-                these_utils = these_mean_utils + these_xis
-                max_util = np.max(these_utils)
-                shifted = these_utils - max_util
+                max_util = np.max(these_mean_utils)
+                shifted = these_mean_utils - max_util
                 exp_utils = np.exp(shifted)
                 denom = np.exp(-max_util) + np.sum(exp_utils)
                 shares[this_market] = exp_utils / denom
@@ -613,24 +610,21 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
         else:
             zero_share = np.zeros(self.T)
             zero_mus = np.zeros(n_X2)
-            sigma_mat = np.diag(self.sigmas)
+            sigma_mat = np.diag(sigmas**2)
             for t in range(T):
                 this_market = slice(t * J, (t + 1) * J)
                 these_mean_utils = mean_utils[this_market]
                 this_X2 = X2[this_market, :]  # (J, n_X2)
-                these_xis = xi_vals[this_market]
-                these_utils = these_mean_utils + these_xis
 
                 def market_shares(eps_vals):
-                    arg_exp = this_X2 @ eps_vals + these_utils.reshape((-1, 1))
-                    max_util = np.max(arg_exp, axis=0).astype(np.float64)
-                    shifted_utils = (arg_exp - max_util).astype(np.float64)
-                    exp_utils = np.exp(shifted_utils)
-                    denom = np.exp(-max_util) + np.sum(exp_utils, axis=0)
+                    arg_exp = this_X2 @ eps_vals + these_mean_utils
+                    max_util = np.max(arg_exp)
+                    exp_utils = np.exp(arg_exp - max_util)
+                    denom = np.exp(-max_util) + np.sum(exp_utils)
                     return exp_utils / denom
 
                 shares[this_market] = integrate_gaussian(
-                    market_shares, zero_mus, sigma_mat
+                    market_shares, J, zero_mus, sigma_mat
                 )
                 zero_share[t] = 1.0 - shares[this_market].sum()
 

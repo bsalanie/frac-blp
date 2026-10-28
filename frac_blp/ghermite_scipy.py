@@ -38,13 +38,9 @@ def integrate_gaussian(f, dim_f, mu, sigma, points_per_dim=5):
         f_values = np.array([f(node) for node in transformed_nodes])
         integral = np.dot(f_values, standard_weights)
     else:
-        print(f"{transformed_nodes=}")
-        f_values = np.zeros_like(transformed_nodes.T)
+        f_values = np.zeros((dim_f, transformed_nodes.shape[0]))
         for i_node, node in enumerate(transformed_nodes):
             f_values[:, i_node] = f(node)
-
-        f_values = np.vstack([f(node) for node in transformed_nodes]).T
-        print(f"{f_values=}")
         integral = np.dot(f_values, standard_weights)
 
     return integral
