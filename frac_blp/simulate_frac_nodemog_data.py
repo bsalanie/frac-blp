@@ -31,7 +31,6 @@ def simulate_frac_nodemog_data(
     names_X1_exo = ["constant"]
     if n_X1_exo > 1:
         names_X1_exo += [f"x_{i + 1}" for i in range(n_X1_exo - 1)]
-    names_X1_endo = []
     names_X1_endo = [f"x_{i}" for i in range(n_X1_exo, n_X1)]
     names_X2_exo = [f"x_{i + 1}" for i in range(n_X2_exo)]
     names_X2_endo = [f"x_{i + 1}" for i in range(n_X2_exo, n_X2)]
@@ -43,7 +42,6 @@ def simulate_frac_nodemog_data(
         names_X1_endo=names_X1_endo,
         names_X2_exo=names_X2_exo,
         names_X2_endo=names_X2_endo,
-        n_Z=n_Z,
         sigma_x=sigma_x,
         sigma_xi=sigma_xi,
         rho_x_z=rho_x_z,
@@ -55,4 +53,4 @@ def simulate_frac_nodemog_data(
 
 if __name__ == "__main__":
     frac_data = simulate_frac_nodemog_data(T=50, J=20)
-    print(frac_data)
+    print(f"{frac_data.shares.min()=}, {frac_data.shares.max()=}")

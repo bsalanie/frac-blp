@@ -46,7 +46,7 @@ def frac_nodemog_estimate(
     names_X2 = frac_data.names_X2
     shares = frac_data.shares
 
-    print(f"{shares=}")
+    print(f"{shares.min()=}, {shares.max()=}")
 
     y = make_y(shares, J)
     K = np.zeros_like(X2)
@@ -118,20 +118,25 @@ if __name__ == "__main__":
     T = 100
     J = 10
     n_obs = T * J
-    n_X1 = 5
-    betas = np.array([-4.3] + [2.0] * (n_X1 - 1))
-    sigmas = np.array([1.0] * (n_X1 - 1))
-    X1_str = [f"x_{i}" for i in range(1, n_X1)]
-    names_X1 = ["constant"] + X1_str
-    names_X2 = X1_str
+    n_X1_exo = 1
+    n_X1_endo = 4
+    n_X1 = n_X1_exo + n_X1_endo
+    n_X2_exo = 0
+    n_X2_endo = n_X1_endo
+    n_X2 = n_X2_exo + n_X2_endo
+    betas = np.array([-4.3] + [2.0] * (n_X1_exo + n_X1_endo - 1))
+    sigmas = np.array([1.0] * (n_X1_exo + n_X1_endo - 1))
+    names_X1_endo = [f"x_{i}" for i in range(1, n_X1_endo + 1)]
+    names_X1 = ["constant"] + names_X1_endo
+    names_X2 = names_X1_endo
 
     frac_data = FracNoDemogSimulatedData(
         T=T,
         J=J,
         names_X1_exo=["constant"],
-        names_X1_endo=X1_str,
+        names_X1_endo=names_X1_endo,
         names_X2_exo=[],
-        names_X2_endo=X1_str,
+        names_X2_endo=names_X1_endo,
         betas=betas,
         sigmas=sigmas,
     )

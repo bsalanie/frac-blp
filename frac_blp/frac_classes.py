@@ -22,7 +22,6 @@ from typing import Any, cast
 
 import numpy as np
 import pandas as pd
-from bs_python_utils.bs_sparse_gaussian import setup_sparse_gaussian
 from bs_python_utils.bsutils import print_stars
 from pydantic import (
     BaseModel,
@@ -35,6 +34,7 @@ from pydantic import (
 )
 
 from frac_blp.frac_utils import make_X
+from frac_blp.ghermite_scipy import integrate_gaussian
 
 
 class _FracNoDemogBase(BaseModel):
@@ -198,6 +198,34 @@ class _FracNoDemogBase(BaseModel):
     def n_X2(self) -> int:
         return self.n_X2_exo + self.n_X2_endo
 
+    def _check_shares(self, shares: np.ndarray) -> None:
+        """Check that ``shares`` is a valid stacked vector of inside shares.
+
+        Args:
+            shares: candidate shares, stacked across markets.
+
+        Raises:
+            ValueError: if ``shares`` is not 1D of length ``n_obs``, has non-finite
+                values or values outside [0, 1], or sums to more than 1 in a market.
+        """
+        if shares.ndim != 1:
+            raise ValueError("shares must be a 1D array.")
+        if shares.shape[0] != self.n_obs:
+            raise ValueError(
+                f"shares must have length {self.n_obs} (got {shares.shape[0]})."
+            )
+        if not np.all(np.isfinite(shares)):
+            raise ValueError("shares must contain only finite values.")
+        if np.any((shares < 0.0) | (shares > 1.0)):
+            raise ValueError("shares must lie between 0 and 1.")
+        T, J = self.T, self.J
+        for t in range(T):
+            market_shares = shares[t * J : (t + 1) * J]
+            if market_shares.sum() > 1.0:
+                raise ValueError(
+                    f"Shares in market {t} sum to more than 1 (got {market_shares.sum():.4f})."
+                )
+
 
 class FracNoDemogRealData(_FracNoDemogBase):
     """Container for observed FRAC data without demographics.
@@ -276,24 +304,7 @@ class FracNoDemogRealData(_FracNoDemogBase):
 
     @model_validator(mode="after")
     def _validate_shares(self) -> FracNoDemogRealData:
-        shares = self.shares
-        if shares.ndim != 1:
-            raise ValueError("shares must be a 1D array.")
-        if shares.shape[0] != self.n_obs:
-            raise ValueError(
-                f"shares must have length {self.n_obs} (got {shares.shape[0]})."
-            )
-        if not np.all(np.isfinite(shares)):
-            raise ValueError("shares must contain only finite values.")
-        if np.any((shares < 0.0) | (shares > 1.0)):
-            raise ValueError("shares must lie between 0 and 1.")
-        T, J = self.T, self.J
-        for t in range(T):
-            market_shares = shares[t * J : (t + 1) * J]
-            if market_shares.sum() > 1.0:
-                raise ValueError(
-                    f"Shares in market {t} sum to more than 1 (got {market_shares.sum():.4f})."
-                )
+        self._check_shares(self.shares)
         return self
 
     def __str__(self) -> str:
@@ -321,14 +332,13 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
     * for `X1_exo`: a constant, then `n_X1_exo`-1 variables N(0, 1) iid
     * for `X1_endo`: `n_X1_endo` variables generated as a function of the instruments and unobserved product quality.
     $$
-    X_endo &= \\sigma_x(\\rho_{xz} Z \\
+    X_endo^k &= \\sigma_x(\\rho_{xz} Z^k \\
         &+ \\sqrt{1 -\\rho_z ^ 2} \\
         &(\\rho_{x\\xi} \\xi / \\sigma_{\\xi}  +   N(0, 1-\\rho_{x\\xi}^2)))
     $$
-    where the $Z$ are iid standard normal and $\\xi$ is $N(0, \\sigma_{\\xi}^2)$.
+    where the $Z^k$ are iid standard normal and $\\xi$ is $N(0, \\sigma_{\\xi}^2)$.
 
     Attributes:
-        n_Z (int): Number of instruments apart from the constant
         sigma_x (float): Std. dev. used for regressor generation.
         sigma_xi (float): Std. dev. of unobserved product quality ``xi``.
         rho_x_z (float): Correlation between ``X`` and ``Z`` (in ``[-1, 1]``).
@@ -355,7 +365,6 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
     betas: np.ndarray = np.array([-4.3, 1.0])
     sigmas: np.ndarray = np.array([1.0])
     seed: int | None = None
-    n_Z: int = 1
 
     @field_validator("T", "J", mode="before")
     @classmethod
@@ -453,17 +462,17 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
     @property
     def Z(self) -> np.ndarray:
-        """Realizations of the instruments ``Z``, shape ``(n_obs, n_Z)``.
-        They are a constant plus ``n_Z`` iid N(0, 1) variables.
+        """Realizations of the instruments ``Z``, shape ``(n_obs, n_X1_endo+1)``.
+        They are a constant plus ``n_X1_endo`` iid N(0, 1) variables.
 
         Returns:
             np.ndarray: Realizations of ``Z``.
         """
-        self.n_Z = self.n_X1_endo
+        n_Z = self.n_X1_endo + 1
         if self._Z_cache is not None:
             return self._Z_cache
         rng = self._rng(1)
-        Z_vals = rng.normal(0.0, 1.0, size=(self.n_obs, self.n_Z))
+        Z_vals = rng.normal(0.0, 1.0, size=(self.n_obs, n_Z))
         Z_full = np.column_stack((np.ones(self.n_obs), Z_vals))
         self._Z_cache = Z_full
         return self._Z_cache
@@ -553,7 +562,7 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
     @property
     def shares(self) -> np.ndarray:
-        """Simulated market shares using sparse Gaussian quadrature.
+        """Simulated market shares.
 
         Returns:
             np.ndarray: Simulated shares stacked across markets, shape ``(n_obs,)``.
@@ -561,14 +570,16 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
         if self._shares_cache is not None:
             return self._shares_cache
         shares_vals = self.compute_shares()
+        print(f"{shares_vals.min()=}, {shares_vals.max()=}")
+        self._check_shares(shares_vals)
         self._shares_cache = shares_vals
         return self._shares_cache
 
     def compute_shares(self) -> np.ndarray:
-        """Compute simulated market shares via sparse Gaussian quadrature.
+        """Compute simulated market shares via tensor Gauss-Hermite quadrature.
 
         The routine integrates over the distribution of random coefficients
-        using a sparse Gaussian grid. For each market, it computes choice
+        using a tensor Gauss-Hermite grid. For each market, it computes choice
         probabilities conditional on nodes and averages them with quadrature
         weights.
 
@@ -582,6 +593,7 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
         X2 = self.X2
         n_X2 = X2.shape[1]
         n_obs = T * J
+        xi_vals = self.xi_var
         mean_utils = X1 @ self.betas + self.xi_var.reshape(n_obs)
         shares = np.zeros(n_obs)
         # Handle the degenerate case n_X2 == 0 (no random coefficients):
@@ -590,30 +602,36 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
             for t in range(T):
                 this_market = slice(t * J, (t + 1) * J)
                 these_mean_utils = mean_utils[this_market]
-                max_util = np.max(these_mean_utils)
-                shifted = these_mean_utils - max_util
+                these_xis = xi_vals[this_market]
+                these_utils = these_mean_utils + these_xis
+                max_util = np.max(these_utils)
+                shifted = these_utils - max_util
                 exp_utils = np.exp(shifted)
                 denom = np.exp(-max_util) + np.sum(exp_utils)
                 shares[this_market] = exp_utils / denom
                 zero_share[t] = 1.0 - shares[this_market].sum()
         else:
-            nodes, weights = setup_sparse_gaussian(n_X2, 17)
-            nodes_T = nodes.T  # shape (n_X2, n_nodes)
-            weighted_nodes = nodes_T * sigmas.reshape((-1, 1))  # shape (n_X2, n_nodes)
             zero_share = np.zeros(self.T)
+            zero_mus = np.zeros(n_X2)
+            sigma_mat = np.diag(self.sigmas)
             for t in range(T):
                 this_market = slice(t * J, (t + 1) * J)
                 these_mean_utils = mean_utils[this_market]
                 this_X2 = X2[this_market, :]  # (J, n_X2)
+                these_xis = xi_vals[this_market]
+                these_utils = these_mean_utils + these_xis
 
-                randoms = this_X2 @ weighted_nodes  # (J, n_nodes)
-                random_utils = randoms + these_mean_utils.reshape((-1, 1))
-                max_util = np.max(random_utils, axis=0).astype(np.float64)
-                shifted_utils = (random_utils - max_util).astype(np.float64)
-                exp_utils = np.exp(shifted_utils)
-                denom = np.exp(-max_util) + np.sum(exp_utils, axis=0)
-                # breakpoint()
-                shares[this_market] = exp_utils @ (weights / denom)
+                def market_shares(eps_vals):
+                    arg_exp = this_X2 @ eps_vals + these_utils.reshape((-1, 1))
+                    max_util = np.max(arg_exp, axis=0).astype(np.float64)
+                    shifted_utils = (arg_exp - max_util).astype(np.float64)
+                    exp_utils = np.exp(shifted_utils)
+                    denom = np.exp(-max_util) + np.sum(exp_utils, axis=0)
+                    return exp_utils / denom
+
+                shares[this_market] = integrate_gaussian(
+                    market_shares, zero_mus, sigma_mat
+                )
                 zero_share[t] = 1.0 - shares[this_market].sum()
 
         print_stars(
