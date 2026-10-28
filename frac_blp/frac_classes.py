@@ -319,7 +319,7 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
     The regressors are generated as follows:
 
     * for `X1_exo`: a constant, then `n_X1_exo`-1 variables N(0, 1) iid
-    * for `X1_endo`:
+    * for `X1_endo`: `n_X1_endo` variables generated as a function of the instruments and unobserved product quality.
     $$
     X_endo &= \\sigma_x(\\rho_{xz} Z \\
         &+ \\sqrt{1 -\\rho_z ^ 2} \\
@@ -348,7 +348,6 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
     _xi_var_cache: np.ndarray | None = PrivateAttr(default=None)
     _shares_cache: np.ndarray | None = PrivateAttr(default=None)
 
-    n_Z: int = 1
     sigma_x: float = 1.0
     sigma_xi: float = 1.0
     rho_x_z: float = float(np.sqrt(0.5))
@@ -356,6 +355,7 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
     betas: np.ndarray = np.array([-4.3, 1.0])
     sigmas: np.ndarray = np.array([1.0])
     seed: int | None = None
+    n_Z: int = 1
 
     @field_validator("T", "J", mode="before")
     @classmethod
@@ -459,6 +459,7 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
         Returns:
             np.ndarray: Realizations of ``Z``.
         """
+        self.n_Z = self.n_X1_endo
         if self._Z_cache is not None:
             return self._Z_cache
         rng = self._rng(1)

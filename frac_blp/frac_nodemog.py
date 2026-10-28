@@ -46,6 +46,8 @@ def frac_nodemog_estimate(
     names_X2 = frac_data.names_X2
     shares = frac_data.shares
 
+    print(f"{shares=}")
+
     y = make_y(shares, J)
     K = np.zeros_like(X2)
 
@@ -114,25 +116,31 @@ def frac_nodemog_estimate(
 
 if __name__ == "__main__":
     T = 100
-    J = 100
+    J = 10
     n_obs = T * J
-    betas = np.array([-4.3, 2.0])
-    sigma = 1.0
-    names_X1 = ["constant", "x"]
-    names_X2 = ["x"]
+    n_X1 = 5
+    betas = np.array([-4.3] + [2.0] * (n_X1 - 1))
+    sigmas = np.array([1.0] * (n_X1 - 1))
+    X1_str = [f"x_{i}" for i in range(1, n_X1)]
+    names_X1 = ["constant"] + X1_str
+    names_X2 = X1_str
 
     frac_data = FracNoDemogSimulatedData(
         T=T,
         J=J,
         names_X1_exo=["constant"],
-        names_X1_endo=["x"],
+        names_X1_endo=X1_str,
         names_X2_exo=[],
-        names_X2_endo=["x"],
+        names_X2_endo=X1_str,
         betas=betas,
-        sigmas=np.array([sigma]),
+        sigmas=sigmas,
     )
     print(frac_data)
 
     betas_sigmas_est, stderrs_est = frac_nodemog_estimate(
-        frac_data, optimal_instruments=False, run_projections=True
+        frac_data, optimal_instruments=True, run_projections=True
     )
+
+    print_stars("The true coefficients were")
+    print(f"    betas: {betas}")
+    print(f"    sigmas: {sigmas}")

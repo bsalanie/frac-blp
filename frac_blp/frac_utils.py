@@ -65,7 +65,9 @@ def make_y(shares: np.ndarray, J: int) -> np.ndarray:
     """
     n_markets = shares.shape[0] // J
     shares_mat = shares.reshape((n_markets, J))
+    print(f"{shares_mat.min()=}", f"{shares_mat.max()=}")
     shares_zero = 1.0 - shares_mat.sum(axis=1)
+    print(f"{shares_zero.min()=}")
     y = np.log(shares_mat / shares_zero.reshape((-1, 1)))
     return cast(np.ndarray, y.reshape(shares.shape))
 

@@ -42,21 +42,11 @@ def tsls_estimate(
     D_mat = -proj_on_Z(X, Z)[0]
 
     n_obs, n_x = X.shape
-    T = n_obs // J
 
     if optimal_instruments:
-        # compute an Omega matrix
-        Omega = make_centered_covariance(prev_residuals.reshape((T, J)))
-        Omega_inv = np.linalg.inv(Omega)
-        # now the optimal instruments
-        Z_opt = np.zeros((n_obs, n_x))
-        tJ = 0
-        for t in range(T):
-            market_t = slice(tJ, tJ + J)
-            Z_opt[market_t, :] = Omega_inv @ D_mat[market_t, :]
-            tJ += J
-    else:
         Z_opt = D_mat
+    else:
+        Z_opt = Z
 
     # and the W weighting matrix
     Z_opt_moments = Z_opt * prev_residuals.reshape((-1, 1))
@@ -65,14 +55,14 @@ def tsls_estimate(
     W_inv = np.linalg.pinv(W_mat)
     print(f"{W_inv=}")
 
-    ZX = Z_opt.T @ X / T
+    ZX = Z_opt.T @ X / n_obs
     ZXT = ZX.T
-    Zy = Z_opt.T @ y / T
+    Zy = Z_opt.T @ y / n_obs
     theta_est = np.linalg.solve(ZXT @ W_inv @ ZX, ZXT @ W_inv @ Zy)
 
     residuals = y - X @ theta_est
 
-    theta_est_var = np.linalg.inv(ZXT @ W_inv @ ZX) / T
+    theta_est_var = np.linalg.inv(ZXT @ W_inv @ ZX) / n_obs
 
     return theta_est, theta_est_var, residuals
 
