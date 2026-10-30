@@ -1,15 +1,17 @@
+from functools import lru_cache
+
 import numpy as np
 from scipy.special import roots_hermite
 
 
-def integrate_gaussian(f, dim_f, mu, sigma, points_per_dim=5):
+@lru_cache(maxsize=None)
+def gauss_hermite_grid(dim, points_per_dim):
     """
-    Integrates f(X) where X ~ N(mu, sigma) up to 5D using
-    Tensor Gauss-Hermite Quadrature. Weights are guaranteed to be positive.
-    """
-    dim = len(mu)
-    assert dim <= 5, "This specific grid generation script is optimized for d <= 5"
+    Return the tensor Gauss-Hermite nodes and normalized weights for N(0, I) in dim dimensions.
 
+    The result depends only on ``dim`` and ``points_per_dim``, so it is cached.
+    The returned arrays are shared between calls and must not be modified.
+    """
     # 1. Get 1D physicists' Gauss-Hermite nodes and strictly positive weights
     # They integrate against the weight function w(x) = exp(-x^2)
     x_1d, w_1d = roots_hermite(points_per_dim)
@@ -26,6 +28,18 @@ def integrate_gaussian(f, dim_f, mu, sigma, points_per_dim=5):
     # Normalize weights so they sum up to 1 (converting physicists' weights to a probability distribution)
     # The weight function for physicists' Hermite is exp(-x^2), but normal distributions use exp(-x^2/2) / sqrt(2*pi)
     standard_weights = standard_weights / (np.pi ** (dim / 2))
+    return standard_nodes, standard_weights
+
+
+def integrate_gaussian(f, dim_f, mu, sigma, points_per_dim=5):
+    """
+    Integrates f(X) where X ~ N(mu, sigma) up to 5D using
+    Tensor Gauss-Hermite Quadrature. Weights are guaranteed to be positive.
+    """
+    dim = len(mu)
+    assert dim <= 5, "This specific grid generation script is optimized for d <= 5"
+
+    standard_nodes, standard_weights = gauss_hermite_grid(dim, points_per_dim)
 
     # 4. Transform nodes from Standard Normal space to the target Gaussian N(mu, sigma)
     # Handle covariance via Cholesky decomposition: X = mu + L * (sqrt(2) * standard_nodes)

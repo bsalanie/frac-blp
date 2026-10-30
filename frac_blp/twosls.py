@@ -13,6 +13,7 @@ def tsls_estimate(
     J: int,
     optimal_instruments: bool = True,
     prev_residuals: np.ndarray | None = None,
+    X_proj: np.ndarray | None = None,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Estimate $E(y - X\theta | Z) = 0$ by 2SLS with optimal instruments and weighting matrix.
@@ -28,6 +29,8 @@ def tsls_estimate(
         optimal_instruments (bool): If True, use optimal instruments. Default is True.
         prev_residuals (np.ndarray | None): Previous residuals, a (T*J,) vector.
             If None, the OLS residuals of ``y`` on ``X`` are used.
+        X_proj (np.ndarray | None): Projection of ``X`` onto ``Z``, a (T*J, K) matrix.
+            If None, it is computed here. Pass it in to avoid recomputing it.
 
     Returns:
         tuple[np.ndarray, np.ndarray, np.ndarray]: The estimated coefficients
@@ -39,7 +42,9 @@ def tsls_estimate(
         prev_residuals = y - X @ ols_est
 
     # First stage: project X onto Z
-    D_mat = -proj_on_Z(X, Z)[0]
+    if X_proj is None:
+        X_proj = proj_on_Z(X, Z)[0]
+    D_mat = -X_proj
 
     n_obs, n_x = X.shape
 
@@ -51,20 +56,20 @@ def tsls_estimate(
     # and the W weighting matrix
     Z_opt_moments = Z_opt * prev_residuals.reshape((-1, 1))
     W_mat = make_centered_covariance(Z_opt_moments)
-    print(f"{W_mat=}")
     W_inv = np.linalg.pinv(W_mat)
-    print(f"{W_inv=}")
+
+    # W_inv: np.ndarray[tuple[Any, ...], np.dtype[np.float64]] = np.eye(n_x)  # --- IGNORE --- for testing only
 
     ZX = Z_opt.T @ X / n_obs
     ZXT = ZX.T
     Zy = Z_opt.T @ y / n_obs
     theta_est = np.linalg.solve(ZXT @ W_inv @ ZX, ZXT @ W_inv @ Zy)
 
-    residuals = y - X @ theta_est
+    new_residuals = y - X @ theta_est
 
     theta_est_var = np.linalg.inv(ZXT @ W_inv @ ZX) / n_obs
 
-    return theta_est, theta_est_var, residuals
+    return theta_est, theta_est_var, new_residuals
 
 
 def print_tsls_results(

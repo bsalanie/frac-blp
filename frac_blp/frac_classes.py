@@ -34,7 +34,10 @@ from pydantic import (
 )
 
 from frac_blp.frac_utils import make_X
-from frac_blp.ghermite_scipy import integrate_gaussian
+from frac_blp.ghermite_scipy import gauss_hermite_grid
+
+# Upper bound on the number of entries in the (markets, nodes, J) work arrays
+_CHUNK_ELEMS = 2_000_000
 
 
 class _FracNoDemogBase(BaseModel):
@@ -608,25 +611,28 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
                 shares[this_market] = exp_utils / denom
                 zero_share[t] = 1.0 - shares[this_market].sum()
         else:
-            zero_share = np.zeros(self.T)
-            zero_mus = np.zeros(n_X2)
-            sigma_mat = np.diag(sigmas**2)
-            for t in range(T):
-                this_market = slice(t * J, (t + 1) * J)
-                these_mean_utils = mean_utils[this_market]
-                this_X2 = X2[this_market, :]  # (J, n_X2)
-
-                def market_shares(eps_vals):
-                    arg_exp = this_X2 @ eps_vals + these_mean_utils
-                    max_util = np.max(arg_exp)
-                    exp_utils = np.exp(arg_exp - max_util)
-                    denom = np.exp(-max_util) + np.sum(exp_utils)
-                    return exp_utils / denom
-
-                shares[this_market] = integrate_gaussian(
-                    market_shares, J, zero_mus, sigma_mat
+            # Quadrature nodes for eps ~ N(0, diag(sigmas^2)), scaled by sigmas
+            std_nodes, std_weights = gauss_hermite_grid(n_X2, 5)
+            eps_nodes = np.sqrt(2.0) * std_nodes * sigmas
+            X2_mkt = X2.reshape((T, J, n_X2))
+            U_mkt = mean_utils.reshape((T, J))
+            shares_mkt = np.zeros((T, J))
+            # Process markets in chunks to bound the (markets, nodes, J) array size
+            chunk = max(1, _CHUNK_ELEMS // (eps_nodes.shape[0] * J))
+            for start in range(0, T, chunk):
+                this_chunk = slice(start, start + chunk)
+                arg_exp = (
+                    np.einsum("tjk,nk->tnj", X2_mkt[this_chunk], eps_nodes)
+                    + U_mkt[this_chunk, None, :]
                 )
-                zero_share[t] = 1.0 - shares[this_market].sum()
+                max_util = np.max(arg_exp, axis=2, keepdims=True)
+                exp_utils = np.exp(arg_exp - max_util)
+                denom = np.exp(-max_util) + np.sum(exp_utils, axis=2, keepdims=True)
+                shares_mkt[this_chunk] = np.einsum(
+                    "n,tnj->tj", std_weights, exp_utils / denom
+                )
+            shares = shares_mkt.reshape(n_obs)
+            zero_share = 1.0 - shares_mkt.sum(axis=1)
 
         print_stars(
             dedent(

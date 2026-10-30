@@ -140,18 +140,14 @@ def proj_on_Z(
         coefficients; and ``r2``, a K-vector of column-wise R-squared values.
     """
     EPS = 1e-12
-    n_x = X.shape[1]
-    X_proj = np.empty(X.shape)
-    coef = np.empty((Z.shape[1], n_x))
-    r2 = np.empty(n_x)
-    for ix in range(n_x):
-        x = X[:, ix]
-        coef_x = spla.lstsq(Z, x)[0]
-        x_proj = Z @ coef_x
-        X_proj[:, ix] = x_proj
-        coef[:, ix] = coef_x
-        var_x = np.var(x)
-        r2[ix] = 1.0 if var_x < EPS else np.var(x_proj) / var_x
+    # one least-squares call handles all columns of X
+    coef = spla.lstsq(Z, X)[0]
+    X_proj = Z @ coef
+    var_x = np.var(X, axis=0)
+    var_x_proj = np.var(X_proj, axis=0)
+    # columns with (numerically) zero variance get r2 = 1, as before
+    safe_var_x = np.where(var_x < EPS, 1.0, var_x)
+    r2 = np.where(var_x < EPS, 1.0, var_x_proj / safe_var_x)
     return X_proj, coef, r2
 
 

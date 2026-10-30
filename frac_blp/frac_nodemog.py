@@ -5,7 +5,6 @@ from bs_python_utils.bsnputils import TwoArrays
 from bs_python_utils.bsutils import bs_error_abort, print_stars
 
 from frac_blp.frac_classes import FracNoDemogData, FracNoDemogSimulatedData
-from frac_blp.frac_expansions import xi_terms
 from frac_blp.frac_utils import make_y, make_Z_full, proj_on_Z
 from frac_blp.twosls import print_tsls_results, tsls_estimate
 
@@ -49,15 +48,11 @@ def frac_nodemog_estimate(
     print(f"{shares.min()=}, {shares.max()=}")
 
     y = make_y(shares, J)
-    K = np.zeros_like(X2)
-
-    tJ = 0
-    for t in range(T):
-        shares_t = shares[tJ : (tJ + J)]
-        X2_t = X2[t * J : (t + 1) * J, :]
-        term2, term3, term4_gaussian, term4_kappa = xi_terms(shares_t, X2_t)
-        K[tJ : (tJ + J), :] = term2
-        tJ += J
+    # term2 = X * (X / 2 - e1), with e1 = sum_j S_j X_j, computed for all markets at once
+    S_all = shares.reshape((T, J))
+    X2_all = X2.reshape((T, J, -1))
+    e1 = np.einsum("tj,tjk->tk", S_all, X2_all)
+    K = (X2_all * (X2_all / 2.0 - e1[:, None, :])).reshape(X2.shape)
 
     n_X1 = X1.shape[1]
     n_X2 = X2.shape[1]
@@ -67,11 +62,15 @@ def frac_nodemog_estimate(
         np.float64
     )
 
+    # combine covariates and artificial regressors
+    X = np.column_stack((X1, K))
+
+    # project X on the full set of instruments, once: used for the R2s and by TSLS
+    X_proj, _, r2_X = proj_on_Z(X, Z_full)
+
     if run_projections:
-        # project on the full set of instruments
         _, _, r2_y = proj_on_Z(y.reshape((frac_data.n_obs, 1)), Z_full)
-        _, _, r2_K = proj_on_Z(K, Z_full)
-        _, _, r2_X1 = proj_on_Z(X1, Z_full)
+        r2_X1, r2_K = r2_X[:n_X1], r2_X[n_X1:]
 
         print_stars(
             f"The first stage R2s of projecting on the full set of {Z_full.shape[1]} instruments are:"
@@ -83,9 +82,6 @@ def frac_nodemog_estimate(
             print(f"     for K_{names_X2[ix]}: {r2_K[ix]:.3f}")
         print("\n")
 
-    # combine covariates and artificial regressors
-    X = np.column_stack((X1, K))
-
     # run TSLS
     print_stars("Running TSLS...")
     betas_sigmas_est, beta_sigmas_varest, xi_est = tsls_estimate(
@@ -95,6 +91,7 @@ def frac_nodemog_estimate(
         J,
         optimal_instruments,
         prev_residuals=None,
+        X_proj=X_proj,
     )
     sigmas_squared_est = betas_sigmas_est[n_X1:]
     if np.min(sigmas_squared_est) < 0.0:
@@ -115,17 +112,17 @@ def frac_nodemog_estimate(
 
 
 if __name__ == "__main__":
-    T = 100
+    T = 20_000
     J = 10
     n_obs = T * J
     n_X1_exo = 1
-    n_X1_endo = 4
+    n_X1_endo = 1
     n_X1 = n_X1_exo + n_X1_endo
     n_X2_exo = 0
     n_X2_endo = n_X1_endo
     n_X2 = n_X2_exo + n_X2_endo
-    betas = np.array([-4.3] + [2.0] * (n_X1_exo + n_X1_endo - 1))
-    sigmas = np.array([0.3] * (n_X1_exo + n_X1_endo - 1))
+    betas = np.array([-4.3] + [-4.0] * (n_X1_exo + n_X1_endo - 1))
+    sigmas = np.array([0.8] * (n_X1_exo + n_X1_endo - 1))
     names_X1_endo = [f"x_{i}" for i in range(1, n_X1_endo + 1)]
     names_X1 = ["constant"] + names_X1_endo
     names_X2 = names_X1_endo
@@ -148,4 +145,4 @@ if __name__ == "__main__":
 
     print_stars("The true coefficients were")
     print(f"    betas: {betas}")
-    print(f"    sigmas: {sigmas}")
+    print(f"    sigmas2: {sigmas**2}")
