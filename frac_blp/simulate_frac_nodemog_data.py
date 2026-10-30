@@ -12,7 +12,6 @@ def simulate_frac_nodemog_data(
     n_X1_endo: int = 1,
     n_X2_exo: int = 0,
     n_X2_endo: int = 1,
-    n_Z: int = 1,
     sigma_x: float = 1.0,
     sigma_xi: float = 1.0,
     rho_x_xi: float = np.sqrt(0.5),
