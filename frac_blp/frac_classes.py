@@ -641,6 +641,11 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
                     """
             )
         )
+        df_sim = pd.DataFrame(X1, columns=self.names_X1)
+        df_sim["shares"] = shares
+        for i in range(1, self.n_X1_endo + 1):  # skip constant
+            df_sim[f"z_{i}"] = self.Z[:, i]
+        df_sim.to_csv("configs/data/simulated_data.csv", index=False)
         return shares
 
     def __str__(self) -> str:

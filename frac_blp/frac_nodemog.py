@@ -49,7 +49,7 @@ def frac_nodemog_estimate(
     names_X2 = frac_data.names_X2
     shares = frac_data.shares
 
-    print(f"{shares.min()=}, {shares.max()=}")
+    # print(f"{shares.min()=}, {shares.max()=}")
 
     y = make_y(shares, J)
     # term2 = X * (X / 2 - e1), with e1 = sum_j S_j X_j, computed for all markets at once
@@ -60,6 +60,9 @@ def frac_nodemog_estimate(
 
     n_X1 = X1.shape[1]
     n_X2 = X2.shape[1]
+
+    print(f"Number of regressors in X1: {n_X1}")
+    print(f"Number of regressors in X2: {n_X2}")
 
     # combine exogenous regressors and instruments
     Z_full = make_Z_full(Z, X1_exo, degree_Z=degree_Z, degree_X1=degree_X1).astype(
