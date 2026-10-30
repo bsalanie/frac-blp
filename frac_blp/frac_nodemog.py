@@ -1,10 +1,14 @@
 """FRAC estimation on macro-BLP, without demographics."""
 
+import argparse
+from pathlib import Path
+
 import numpy as np
 from bs_python_utils.bsnputils import TwoArrays
 from bs_python_utils.bsutils import bs_error_abort, print_stars
 
-from frac_blp.frac_classes import FracNoDemogData, FracNoDemogSimulatedData
+from frac_blp.config import build_frac_data, load_config
+from frac_blp.frac_classes import FracNoDemogData
 from frac_blp.frac_utils import make_y, make_Z_full, proj_on_Z
 from frac_blp.twosls import print_tsls_results, tsls_estimate
 
@@ -112,37 +116,26 @@ def frac_nodemog_estimate(
 
 
 if __name__ == "__main__":
-    T = 20_000
-    J = 10
-    n_obs = T * J
-    n_X1_exo = 1
-    n_X1_endo = 1
-    n_X1 = n_X1_exo + n_X1_endo
-    n_X2_exo = 0
-    n_X2_endo = n_X1_endo
-    n_X2 = n_X2_exo + n_X2_endo
-    betas = np.array([-4.3] + [-4.0] * (n_X1_exo + n_X1_endo - 1))
-    sigmas = np.array([0.8] * (n_X1_exo + n_X1_endo - 1))
-    names_X1_endo = [f"x_{i}" for i in range(1, n_X1_endo + 1)]
-    names_X1 = ["constant"] + names_X1_endo
-    names_X2 = names_X1_endo
-
-    frac_data = FracNoDemogSimulatedData(
-        T=T,
-        J=J,
-        names_X1_exo=["constant"],
-        names_X1_endo=names_X1_endo,
-        names_X2_exo=[],
-        names_X2_endo=names_X1_endo,
-        betas=betas,
-        sigmas=sigmas,
+    parser = argparse.ArgumentParser(
+        description="Estimate FRAC without demographics using a TOML configuration file."
     )
+    parser.add_argument("config", type=Path, help="path to the TOML configuration file")
+    args = parser.parse_args()
+
+    config = load_config(args.config)
+    frac_data = build_frac_data(config)
     print(frac_data)
 
+    est = config.estimation
     betas_sigmas_est, stderrs_est = frac_nodemog_estimate(
-        frac_data, optimal_instruments=True, run_projections=True
+        frac_data,
+        degree_Z=est.degree_Z,
+        degree_X1=est.degree_X1,
+        optimal_instruments=est.optimal_instruments,
+        run_projections=est.run_projections,
     )
 
-    print_stars("The true coefficients were")
-    print(f"    betas: {betas}")
-    print(f"    sigmas2: {sigmas**2}")
+    if config.data.source == "simulated":
+        print_stars("The true coefficients were")
+        print(f"    betas: {config.simulation.betas}")
+        print(f"    sigmas2: {np.array(config.simulation.sigmas) ** 2}")

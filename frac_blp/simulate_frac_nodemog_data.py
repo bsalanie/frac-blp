@@ -18,9 +18,13 @@ def simulate_frac_nodemog_data(
     rho_x_z: float = np.sqrt(0.5),
     betas: np.ndarray = np.array([-4.3, 1.0]),
     sigmas: np.ndarray = np.array([1.0]),
+    seed: int | None = None,
 ) -> FracNoDemogSimulatedData:
     """
     Simulate FRAC data with endogenous random-coefficient regressors.
+
+    Args:
+        seed (int | None): Seed for the random draws. If None, each run gives different data.
 
     Returns:
         FracNoDemogSimulatedData: Simulated dataset ready for FRAC estimation.
@@ -47,6 +51,7 @@ def simulate_frac_nodemog_data(
         rho_x_xi=rho_x_xi,
         betas=betas,
         sigmas=sigmas,
+        seed=seed,
     )
 
 

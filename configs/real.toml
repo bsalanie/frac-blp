@@ -1,0 +1,21 @@
+# FRAC without demographics, on a data file.
+# The file has one row per product and market, stacked by market (T * J rows).
+# Paths are relative to this config file. Columns are named as below.
+
+[data]
+source = "real"
+file = "data/simulated_data.csv"   # .csv or .parquet
+shares = "shares"
+instruments = ["z_1"]     # a constant is added automatically; do not list one
+X1_exo = ["constant"]
+X1_endo = ["x_1"]
+X2_exo = []                      # subset of X1_exo
+X2_endo = ["x_1"]              # subset of X1_endo
+T = 500
+J = 10
+
+[estimation]
+degree_Z = 2
+degree_X1 = 2
+optimal_instruments = true
+run_projections = true

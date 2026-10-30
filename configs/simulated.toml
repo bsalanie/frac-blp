@@ -1,0 +1,26 @@
+# FRAC without demographics, on simulated data.
+# Run from the repository root:  python -m frac_blp.frac_nodemog configs/simulated.toml
+
+[data]
+source = "simulated"
+
+[simulation]
+T = 500
+J = 10
+n_X1_exo = 1        # the constant
+n_X1_endo = 1
+n_X2_exo = 0
+n_X2_endo = 1
+sigma_x = 1.0
+sigma_xi = 1.0
+rho_x_xi = 0.7071067811865476
+rho_x_z = 0.7071067811865476
+betas = [-4.3, -4.0]
+sigmas = [0.8]
+seed = 1            # remove, or leave unset, to get different data on each run
+
+[estimation]
+degree_Z = 2
+degree_X1 = 2
+optimal_instruments = true
+run_projections = true
