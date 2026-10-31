@@ -417,6 +417,75 @@
   
   
     <li class="md-nav__item">
+      <a href="ghermite_scipy.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Gauss-Hernmite quadrature
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="twosls.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    two-stage least-squares
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="config.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="frac_classes.html" class="md-nav__link">
         
   
@@ -440,7 +509,7 @@
   
   
     <li class="md-nav__item">
-      <a href="artificial_regressors.html" class="md-nav__link">
+      <a href="frac_expansions.html" class="md-nav__link">
         
   
   
@@ -692,98 +761,356 @@ the user can modify the dimensions and other parameters of the simulation as des
 
 
 <h2 id="frac_blp.examples.example_frac_nodemog.run_example" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">run_example</span><span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">n_X1_exo</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_X1_endo</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_X2_exo</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_X2_endo</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_Z</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sigma_x</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">sigma_xi</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">rho_x_xi</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">rho_x_z</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">betas</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">4.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]),</span> <span class="n">sigmas</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]))</span></code>
+            <code class="highlight language-python"><span class="n">run_example</span><span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">n_X1_exo</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_X1_endo</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_X2_exo</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_X2_endo</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sigma_x</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">sigma_xi</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">rho_x_xi</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">rho_x_z</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">betas</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">4.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]),</span> <span class="n">sigmas</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]))</span></code>
 
 <a href="#frac_blp.examples.example_frac_nodemog.run_example" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
     <div class="doc doc-contents ">
 
-        <p>Simulates data and estimates it with FRAC without demographics;
-then repeats the estimation using the interface for real data.</p>
+        <p>Simulate data and estimate it with FRAC without demographics.</p>
+<p>Then repeat the estimation using the interface for real data.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>T</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Number of markets. Default is 50.</p>
+              </div>
+            </td>
+            <td>
+                  <code>50</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>J</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Number of products per market. Default is 20.</p>
+              </div>
+            </td>
+            <td>
+                  <code>20</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>n_X1_exo</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Number of exogenous regressors with fixed coefficients,
+including the constant. Default is 1.</p>
+              </div>
+            </td>
+            <td>
+                  <code>1</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>n_X1_endo</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Number of endogenous regressors with fixed coefficients.
+Default is 1.</p>
+              </div>
+            </td>
+            <td>
+                  <code>1</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>n_X2_exo</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Number of exogenous regressors with random coefficients.
+Default is 0.</p>
+              </div>
+            </td>
+            <td>
+                  <code>0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>n_X2_endo</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Number of endogenous regressors with random coefficients.
+Default is 1.</p>
+              </div>
+            </td>
+            <td>
+                  <code>1</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sigma_x</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Standard deviation parameter of the regressors. Default is 1.0.</p>
+              </div>
+            </td>
+            <td>
+                  <code>1.0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sigma_xi</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Standard deviation of the unobserved product characteristic.
+Default is 1.0.</p>
+              </div>
+            </td>
+            <td>
+                  <code>1.0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>rho_x_xi</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Correlation between the regressors and the unobserved
+characteristic. Default is sqrt(0.5).</p>
+              </div>
+            </td>
+            <td>
+                  <code><span title="numpy.sqrt">sqrt</span>(0.5)</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>rho_x_z</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Correlation between the regressors and the instruments.
+Default is sqrt(0.5).</p>
+              </div>
+            </td>
+            <td>
+                  <code><span title="numpy.sqrt">sqrt</span>(0.5)</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>betas</code>
+            </td>
+            <td>
+                  <code><span title="numpy.ndarray">ndarray</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Fixed coefficients. Default is <code>[-4.3, 1.0]</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code><span title="numpy.array">array</span>([-4.3, 1.0])</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sigmas</code>
+            </td>
+            <td>
+                  <code><span title="numpy.ndarray">ndarray</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Standard deviations of the random coefficients.
+Default is <code>[1.0]</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code><span title="numpy.array">array</span>([1.0])</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
             <details class="quote">
               <summary>Source code in <code>frac_blp/examples/example_frac_nodemog.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span>
-<span class="normal">75</span>
-<span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span>
-<span class="normal">79</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run_example</span><span class="p">(</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run_example</span><span class="p">(</span>
     <span class="n">T</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
     <span class="n">J</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
     <span class="n">n_X1_exo</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">n_X1_endo</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">n_X2_exo</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">n_X2_endo</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="n">n_Z</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">sigma_x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
     <span class="n">sigma_xi</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
     <span class="n">rho_x_xi</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span>
     <span class="n">rho_x_z</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span>
     <span class="n">betas</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">4.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]),</span>
     <span class="n">sigmas</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]),</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simulates data and estimates it with FRAC without demographics;</span>
-<span class="sd">    then repeats the estimation using the interface for real data.</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simulate data and estimate it with FRAC without demographics.</span>
+
+<span class="sd">    Then repeat the estimation using the interface for real data.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        T (int): Number of markets. Default is 50.</span>
+<span class="sd">        J (int): Number of products per market. Default is 20.</span>
+<span class="sd">        n_X1_exo (int): Number of exogenous regressors with fixed coefficients,</span>
+<span class="sd">            including the constant. Default is 1.</span>
+<span class="sd">        n_X1_endo (int): Number of endogenous regressors with fixed coefficients.</span>
+<span class="sd">            Default is 1.</span>
+<span class="sd">        n_X2_exo (int): Number of exogenous regressors with random coefficients.</span>
+<span class="sd">            Default is 0.</span>
+<span class="sd">        n_X2_endo (int): Number of endogenous regressors with random coefficients.</span>
+<span class="sd">            Default is 1.</span>
+<span class="sd">        sigma_x (float): Standard deviation parameter of the regressors. Default is 1.0.</span>
+<span class="sd">        sigma_xi (float): Standard deviation of the unobserved product characteristic.</span>
+<span class="sd">            Default is 1.0.</span>
+<span class="sd">        rho_x_xi (float): Correlation between the regressors and the unobserved</span>
+<span class="sd">            characteristic. Default is sqrt(0.5).</span>
+<span class="sd">        rho_x_z (float): Correlation between the regressors and the instruments.</span>
+<span class="sd">            Default is sqrt(0.5).</span>
+<span class="sd">        betas (np.ndarray): Fixed coefficients. Default is ``[-4.3, 1.0]``.</span>
+<span class="sd">        sigmas (np.ndarray): Standard deviations of the random coefficients.</span>
+<span class="sd">            Default is ``[1.0]``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">print_stars</span><span class="p">(</span><span class="s2">&quot;Hello from frac_blp!&quot;</span><span class="p">)</span>
     <span class="n">simulated_frac_data</span> <span class="o">=</span> <span class="n">simulate_frac_nodemog_data</span><span class="p">(</span>
@@ -793,7 +1120,6 @@ then repeats the estimation using the interface for real data.</p>
         <span class="n">n_X1_endo</span><span class="o">=</span><span class="n">n_X1_endo</span><span class="p">,</span>
         <span class="n">n_X2_exo</span><span class="o">=</span><span class="n">n_X2_exo</span><span class="p">,</span>
         <span class="n">n_X2_endo</span><span class="o">=</span><span class="n">n_X2_endo</span><span class="p">,</span>
-        <span class="n">n_Z</span><span class="o">=</span><span class="n">n_Z</span><span class="p">,</span>
         <span class="n">sigma_x</span><span class="o">=</span><span class="n">sigma_x</span><span class="p">,</span>
         <span class="n">sigma_xi</span><span class="o">=</span><span class="n">sigma_xi</span><span class="p">,</span>
         <span class="n">rho_x_xi</span><span class="o">=</span><span class="n">rho_x_xi</span><span class="p">,</span>

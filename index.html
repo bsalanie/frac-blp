@@ -389,9 +389,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#entering-the-data" class="md-nav__link">
+  <a href="#inputs" class="md-nav__link">
     <span class="md-ellipsis">
-      entering the data
+      inputs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      outputs
     </span>
   </a>
   
@@ -411,6 +420,15 @@
   
     <nav class="md-nav" aria-label="Release notes">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#05-october-31-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.5 (October 31, 2026)
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#04-june-1-2026" class="md-nav__link">
@@ -450,6 +468,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#todo-october-31-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      TODO October 31, 2026
+    </span>
+  </a>
   
 </li>
       
@@ -534,6 +561,75 @@
   
   
     <li class="md-nav__item">
+      <a href="ghermite_scipy.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Gauss-Hernmite quadrature
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="twosls.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    two-stage least-squares
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="config.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="frac_classes.html" class="md-nav__link">
         
   
@@ -557,7 +653,7 @@
   
   
     <li class="md-nav__item">
-      <a href="artificial_regressors.html" class="md-nav__link">
+      <a href="frac_expansions.html" class="md-nav__link">
         
   
   
@@ -685,9 +781,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#entering-the-data" class="md-nav__link">
+  <a href="#inputs" class="md-nav__link">
     <span class="md-ellipsis">
-      entering the data
+      inputs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      outputs
     </span>
   </a>
   
@@ -707,6 +812,15 @@
   
     <nav class="md-nav" aria-label="Release notes">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#05-october-31-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.5 (October 31, 2026)
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#04-june-1-2026" class="md-nav__link">
@@ -749,6 +863,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#todo-october-31-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      TODO October 31, 2026
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -784,37 +907,8 @@
 <p>The package estimates a second-order approximation to the macro BLP model with random coefficients using the FRAC method of Salanie and Wolak. </p>
 <p><strong>At this early stage, the package only implements the basic version of the model without demographics. The random coefficients are assumed to be independently distributed.</strong></p>
 <p>The user should be familiar with the macro BLP model (Berry, Levinsohn, and Pakes, 1995). We use very similar notation to that of Conlon and Gortmaker in their <code>pyblp</code> package.</p>
-<p>The inputs are:</p>
-<ul>
-<li><code>T</code>: the number of markets </li>
-<li><code>J</code>: the number of products per market</li>
-</ul>
-<p>The data must contain <code>N=T*J</code> observations, corresponding to all products in all markets.
-The observations should be ordered by market, i.e., the first <code>J</code> rows correspond to market 1, the next <code>J</code> rows to market 2, etc.</p>
-<p>The user must provide the following data matrices:</p>
-<ul>
-<li><code>Z</code>: a matrix of instruments, to which the program will add a constant</li>
-<li><code>shares</code>: a <code>N</code>-vector of market shares.</li>
-<li>
-<p>the regressors as a Pandas data frame with <code>N</code> rows. The program will construct the following Numpy matrices from the data frame:</p>
-</li>
-<li>
-<p><code>X1_exo</code>, the matrix of exogenous variables with fixed coefficients, using the column names in <code>names_X1_exo</code></p>
-</li>
-<li><code>X1_endo</code>, the matrix of endogenous variables with fixed coefficients, using the column names in <code>names_X1_endo</code></li>
-<li><code>X2_exo</code>, the matrix of exogenous variables with fixed coefficients, using the column names in <code>names_X2_exo</code></li>
-<li><code>X1_endo</code>, the matrix of endogenous variables with fixed coefficients, using the column names in <code>names_X2_endo</code>.</li>
-</ul>
-<p><code>names_X1_exo, names_X1_endo, names_X2_exo, names_X2_endo</code> are lists of strings provided by the user with the names of the columns in the data frame corresponding to each of these four types of variables.</p>
-<p>A constant term will not be added automatically, so if desired the user must include a column of ones in <code>X1_exo</code> and/or <code>X2_exo</code>.</p>
-<p><strong><code>X2_exo</code> must be a subset of <code>X1_exo</code>, and <code>X2_endo</code> must be a subset of <code>X1_endo</code> (i.e., all variables with random coefficients must also have fixed coefficients). Any of these four matrices can be <code>None</code> if there are no variables of that type.</strong></p>
-<p>The outputs are:</p>
-<ul>
-<li><code>betas</code>: the estimates on the variables with fixed coefficients <code>X1_exo</code>, <code>X1_endo</code> and the mean coefficients on the variables with random coefficients <code>X2_exo</code>, <code>X2_endo</code>, in that order.</li>
-<li><code>sigmas</code>: the standard deviations of the coefficients on the variables with random coefficients <code>X2_exo</code> and <code>X2_endo</code>, in that order.</li>
-</ul>
-<h4 id="entering-the-data">entering the data<a class="headerlink" href="#entering-the-data" title="Permanent link">&para;</a></h4>
-<p>The data must first be entered into a <code>FracNodemogRealData</code> object:
+<h4 id="inputs">inputs<a class="headerlink" href="#inputs" title="Permanent link">&para;</a></h4>
+<p>The user must provide the inputs in a TOML configuration file. Here is an example:
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -825,32 +919,64 @@ The observations should be ordered by market, i.e., the first <code>J</code> row
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
 <span class="normal">10</span>
-<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">frac</span> <span class="n">blp</span><span class="o">.</span><span class="n">frac</span> <span class="n">classes</span> <span class="kn">import</span><span class="w"> </span><span class="nn">FracNodemogRealData</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code>[data]
+source = &quot;real&quot;                   # indicates that it is data from observations
+file = &quot;data/simulated_data.csv&quot;   # must be .csv or .parquet
+shares = &quot;shares&quot;                 # the name of the column that contains the market shares $S_{jt}$
+# the names of the columns that have the instrumments. A constant is added automatically; do not list one
+instruments = [&quot;z_1&quot;, &quot;z_2&quot;, &quot;z_3&quot;]  
+# 
+X1_exo = [&quot;constant&quot;]
+X1_endo = [&quot;x_1&quot;, &quot;x_2&quot;, &quot;x_3&quot;] 
+X2_exo = []                           # must be a subset of X1_exo
+X2_endo = [&quot;x_1&quot;, &quot;x_2&quot;]              # must be a subset of X1_endo
+T = 500                               # number of markets
+J = 10                                # number of products on each market
 
-<span class="n">frac</span> <span class="n">data</span> <span class="o">=</span> <span class="n">FracNodemogRealData</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span>
-                            <span class="n">names_X1_exo</span><span class="p">,</span>
-                            <span class="n">names_X1_endo</span><span class="p">,</span>
-                            <span class="n">names_X2_exo</span><span class="p">,</span>
-                            <span class="n">names_X2_endo</span><span class="p">,</span>
-                            <span class="n">df_X1</span><span class="p">,</span> 
-                            <span class="n">Z</span><span class="p">,</span> 
-                            <span class="n">shares</span><span class="p">,</span>
-                            <span class="p">)</span>
+[estimation]
+degree_Z = 2                          
+# we create instruments from interactions of the `instruments` up to `degree_Z` 
+degree_X1 = 2                         #   interacted with powers of `X1_exo` up to `degree_X1`
+optimal_instruments = true            #   if `true`, we use the optimal instruments
+run_projections = true                #   if `true`, some information about the first stage is printed
+results_file = &quot;estimation_results.txt&quot;         # this is the default value.
 </code></pre></div></td></tr></table></div>
-Then the model can be estimated with:
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">frac_blp.frac_nodemog</span><span class="w"> </span><span class="kn">import</span> <span class="n">estimate</span>
-
-<span class="n">betabar</span><span class="p">,</span> <span class="n">sigmas</span> <span class="o">=</span> <span class="n">frac</span> <span class="n">nodemog</span> <span class="n">estimate</span><span class="p">(</span><span class="n">frac</span> <span class="n">data</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-<code>frac_demog_estimate</code> also has optional arguments to define the combinations of instruments and exogeneous variables to be used in the first stage:</p>
+The <code>file</code> must have one row per product and market, stacked by market (<code>N=T * J</code> rows, where  <code>T</code> is the number of markets and <code>J</code> is the number of products per market) <strong>The observations should be ordered by market</strong>, i.e., the first <code>J</code> rows correspond to market 1, the next <code>J</code> rows to market 2, etc. The path of <code>file</code> is relative to that of the configuration file.</p>
+<p>The names of the variables must correspond to column names in the header of <code>file</code>.</p>
+<p>The program will construct the following Numpy matrices from the data, using the column names indicated in the 
+configuration file:
+  * <code>X1_exo</code>, the matrix of exogenous variables with fixed coefficients
+  * <code>X1_endo</code>, the matrix of endogenous variables with fixed coefficients
+  * <code>X2_exo</code>, the matrix of exogenous variables with fixed coefficients
+  * <code>X1_endo</code>, the matrix of endogenous variables with fixed coefficients.</p>
+<p><strong><code>X2_exo</code> must be a subset of <code>X1_exo</code>, and <code>X2_endo</code> must be a subset of <code>X1_endo</code> (i.e., all variables with random coefficients must also have fixed coefficients). Any of these four matrices can be <code>None</code> if there are no variables of that type.</strong></p>
+<p><strong>A constant term will not be added automatically</strong>. If one is desired, the user must include a column of ones in <code>X1_exo</code>,  and in <code>X2_exo</code> if the coefficient of the constant is random.</p>
+<p>On the other hand, a constant will be added automatically to the <code>instruments</code>. If  <code>degree_Z=d</code> is provided, then all interactions of the <span class="arithmatex">\(n_Z\)</span> columns of <code>Z</code> up to degree <code>d</code>, plus the constant,  will be used as instruments.  This gives <span class="arithmatex">\({n_Z+d\choose d}\)</span> instruments. If <code>degree_X1=d'</code> is provided, then all interactions of the <span class="arithmatex">\(n_{1x}\)</span> columns of <code>X1_exo</code> up to degree <code>d'</code> will also be used, on their own and multiplied by the interactions of <code>Z</code> up to degree <code>d</code>. That gives an additional <span class="arithmatex">\(({n_Z+d\choose d}-1)\times ({n_{1x}+d^\prime\choose d^\prime}-1)+1\)</span> instruments.</p>
+<p>The default has <code>degree_Z=2</code> and <code>degree_X1=2</code>; the total number of instruments then is:
+$$
+\frac{(n_{1x}+1)(n_{1x}+2)}{2} \times \left(\frac{(n_{Z}+1)(n_{Z}+2)}{2}-1\right).
+$$</p>
+<h4 id="outputs">outputs<a class="headerlink" href="#outputs" title="Permanent link">&para;</a></h4>
+<p>The outputs are:</p>
 <ul>
-<li>if <code>degree_Z=d</code> is provided, then all interactions of the columns of <code>Z</code> up to degree <code>d</code> will be used as instruments. </li>
-<li>if <code>degree_X1=d'</code> is provided, then all interactions of the columns of <code>X1_exo</code> up to degree <code>d'</code> will also be used, on their own and multiplied by the interactions of <code>Z</code>.</li>
+<li><code>betas_sigmas2_est</code>: the estimates of the mean coefficients on the variables <code>X1_exo</code> and <code>X1_endo</code>, then the estimated variances of the coefficients on <code>X2_exo</code> and <code>X2_endo</code>, in that order.</li>
+<li><code>stderrs_est</code>: the estimated standard errors of these estimates.</li>
+<li><code>xi_est</code>: the estimated product effects, a vector of size <code>N</code>, ordered by market</li>
 </ul>
-<p>The default has <code>degree_Z=2</code> and <code>degree_X1=2</code>.</p>
+<p>They are saved in the text file indicated as <code>results_file</code> in the configuration file. If no <code>results_file</code> is indicated, the results are written in <code>estimation_results.txt</code>.  Its path is relative to where the program was run.</p>
 <h3 id="release-notes">Release notes<a class="headerlink" href="#release-notes" title="Permanent link">&para;</a></h3>
+<h4 id="05-october-31-2026">0.5 (October 31, 2026)<a class="headerlink" href="#05-october-31-2026" title="Permanent link">&para;</a></h4>
+<p>Improved and accelerated. Uses a TOML configuration file for the parameters.</p>
 <h4 id="04-june-1-2026">0.4 (June 1, 2026)<a class="headerlink" href="#04-june-1-2026" title="Permanent link">&para;</a></h4>
 <p>Added higher-order regressors (not used for estimation yet).</p>
 <h4 id="03-november-7-2025">0.3 (November 7, 2025)<a class="headerlink" href="#03-november-7-2025" title="Permanent link">&para;</a></h4>
@@ -859,6 +985,11 @@ Then the model can be estimated with:
 <p>Improved README.</p>
 <h4 id="01-october-26-2025">0.1 (October 26, 2025)<a class="headerlink" href="#01-october-26-2025" title="Permanent link">&para;</a></h4>
 <p>First working version, no demographics.</p>
+<h3 id="todo-october-31-2026">TODO October 31, 2026<a class="headerlink" href="#todo-october-31-2026" title="Permanent link">&para;</a></h3>
+<ol>
+<li>do up to 4th order with <span class="arithmatex">\(E(X\vert Z)\)</span> and <span class="arithmatex">\(E(K_l+\sum_m W_{lm} \hat{\sigma}^2_m\)</span> and <span class="arithmatex">\(E(T_3\vert Z)\)</span> and <span class="arithmatex">\(E(T_4^\kappa\vert Z)\)</span> and <span class="arithmatex">\(\Omega_2\)</span>. This should give estimates of all 4 moments.</li>
+<li>update <span class="arithmatex">\(\Omega\)</span> and the optimal instruments and run again (and perhaps again).</li>
+</ol>
 
 
 
