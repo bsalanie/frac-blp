@@ -1,6 +1,6 @@
 [project]
 name = "frac-blp"
-version = "0.4.0"
+version = "0.5.0"
 description = "FRAC estimation for macro-BLP models"
 readme = "README.md"
 requires-python = ">=3.13"

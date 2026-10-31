@@ -19,3 +19,4 @@ degree_Z = 2
 degree_X1 = 2
 optimal_instruments = true
 run_projections = true
+results_file = "check_file.txt"

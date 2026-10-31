@@ -4,7 +4,7 @@ import argparse
 from pathlib import Path
 
 import numpy as np
-from bs_python_utils.bsnputils import TwoArrays
+from bs_python_utils.bsnputils import ThreeArrays
 from bs_python_utils.bsutils import print_stars
 
 from frac_blp.config import build_frac_data, load_config
@@ -19,7 +19,7 @@ def frac_nodemog_estimate(
     degree_X1: int = 2,
     optimal_instruments: bool = True,
     run_projections: bool = True,
-) -> TwoArrays:
+) -> ThreeArrays:
     """
     Estimate FRAC parameters without demographics using two-stage least squares.
 
@@ -89,7 +89,7 @@ def frac_nodemog_estimate(
 
     # run TSLS
     print_stars("Running TSLS...")
-    betas_sigmas_est, beta_sigmas_varest, xi_est = tsls_estimate(
+    betas_sigmas2_est, betas_sigmas2_varest, xi_est = tsls_estimate(
         y,
         X,
         Z_full,
@@ -98,22 +98,22 @@ def frac_nodemog_estimate(
         prev_residuals=None,
         X_proj=X_proj,
     )
-    sigmas_squared_est = betas_sigmas_est[n_X1:]
+    sigmas_squared_est = betas_sigmas2_est[n_X1:]
     if np.min(sigmas_squared_est) < 0.0:
         print_stars("\n The variance estimates are")
         print(sigmas_squared_est)
         print_stars("We have a negative variance estimate!")
 
-    stderrs_est = np.sqrt(np.diag(beta_sigmas_varest))
+    stderrs_est = np.sqrt(np.diag(betas_sigmas2_varest))
 
     print_tsls_results(
-        betas_sigmas_est,
+        betas_sigmas2_est,
         stderrs_est,
         names_coeffs=names_X1 + ["sigma2_" + name for name in names_X2],
         title="The FRAC second-order estimates are:",
     )
 
-    return betas_sigmas_est, stderrs_est
+    return betas_sigmas2_est, stderrs_est, xi_est
 
 
 if __name__ == "__main__":
@@ -128,13 +128,26 @@ if __name__ == "__main__":
     print(frac_data)
 
     est = config.estimation
-    betas_sigmas_est, stderrs_est = frac_nodemog_estimate(
+    betas_sigmas2_est, stderrs_est, xi_est = frac_nodemog_estimate(
         frac_data,
         degree_Z=est.degree_Z,
         degree_X1=est.degree_X1,
         optimal_instruments=est.optimal_instruments,
         run_projections=est.run_projections,
     )
+
+    with open(file=est.results_file, mode="w") as f:
+        f.write("The FRAC second-order estimates are:\n")
+        for name, est, stderr in zip(
+            frac_data.names_X1 + ["sigma2_" + name for name in frac_data.names_X2],
+            betas_sigmas2_est,
+            stderrs_est,
+        ):
+            f.write(f"{name}: {est:.6f} ({stderr:.6f})\n")
+        f.write("\n")
+        f.write("The estimated product effects are:\n")
+        for xi_val in xi_est:
+            f.write(f"{xi_val:.6f}\n")
 
     if config.data.source == "simulated":
         print_stars("The true coefficients were")

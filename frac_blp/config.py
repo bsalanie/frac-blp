@@ -131,6 +131,7 @@ class EstimationConfig(_StrictModel):
 
     degree_Z: int = 2
     degree_X1: int = 2
+    results_file: str = "estimation_results.txt"
     optimal_instruments: bool = True
     run_projections: bool = True
 
