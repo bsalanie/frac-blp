@@ -6,11 +6,11 @@
 source = "real"
 file = "data/simulated_data.csv"   # .csv or .parquet
 shares = "shares"
-instruments = ["z_1"]     # a constant is added automatically; do not list one
+instruments = ["z_1", "z_2", "z_3"]     # a constant is added automatically; do not list one
 X1_exo = ["constant"]
-X1_endo = ["x_1"]
+X1_endo = ["x_1", "x_2", "x_3"]
 X2_exo = []                      # subset of X1_exo
-X2_endo = ["x_1"]              # subset of X1_endo
+X2_endo = ["x_1", "x_2"]              # subset of X1_endo
 T = 500
 J = 10
 

@@ -802,7 +802,7 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
         if self._shares_cache is not None:
             return self._shares_cache
         shares_vals = self.compute_shares()
-        print(f"{shares_vals.min()=}, {shares_vals.max()=}")
+        # print(f"{shares_vals.min()=}, {shares_vals.max()=}")
         self._check_shares(shares_vals)
         self._shares_cache = shares_vals
         return self._shares_cache

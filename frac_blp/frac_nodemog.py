@@ -5,7 +5,7 @@ from pathlib import Path
 
 import numpy as np
 from bs_python_utils.bsnputils import TwoArrays
-from bs_python_utils.bsutils import bs_error_abort, print_stars
+from bs_python_utils.bsutils import print_stars
 
 from frac_blp.config import build_frac_data, load_config
 from frac_blp.frac_classes import FracNoDemogData
@@ -102,7 +102,7 @@ def frac_nodemog_estimate(
     if np.min(sigmas_squared_est) < 0.0:
         print_stars("\n The variance estimates are")
         print(sigmas_squared_est)
-        bs_error_abort("We have a negative variance estimate!")
+        print_stars("We have a negative variance estimate!")
 
     stderrs_est = np.sqrt(np.diag(beta_sigmas_varest))
 

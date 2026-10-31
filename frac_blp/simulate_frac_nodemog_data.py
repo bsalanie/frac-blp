@@ -57,4 +57,4 @@ def simulate_frac_nodemog_data(
 
 if __name__ == "__main__":
     frac_data = simulate_frac_nodemog_data(T=50, J=20)
-    print(f"{frac_data.shares.min()=}, {frac_data.shares.max()=}")
+    # print(f"{frac_data.shares.min()=}, {frac_data.shares.max()=}")
