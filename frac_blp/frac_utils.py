@@ -73,6 +73,16 @@ def make_y(shares: np.ndarray, J: int) -> np.ndarray:
 
 
 def _monomials_of_degree(mat: np.ndarray, d: int) -> list[np.ndarray]:
+    """Return all products of degree ``d`` of the columns of a matrix.
+
+    Args:
+        mat (np.ndarray): Matrix whose columns are the base variables, an (n, p) array.
+        d (int): Degree of the products. If 0, return a single column of ones.
+
+    Returns:
+        list[np.ndarray]: One (n,) array per product, in the order of
+        ``combinations_with_replacement`` over the column indices.
+    """
     n_obs, n_cols = mat.shape
     if d == 0:
         return [np.ones(n_obs)]

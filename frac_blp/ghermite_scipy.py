@@ -1,3 +1,5 @@
+"""Tensor Gauss-Hermite quadrature for integrals against a Gaussian density."""
+
 from functools import lru_cache
 
 import numpy as np
@@ -6,11 +8,19 @@ from scipy.special import roots_hermite
 
 @lru_cache(maxsize=None)
 def gauss_hermite_grid(dim, points_per_dim):
-    """
-    Return the tensor Gauss-Hermite nodes and normalized weights for N(0, I) in dim dimensions.
+    """Return tensor Gauss-Hermite nodes and normalized weights for N(0, I).
 
     The result depends only on ``dim`` and ``points_per_dim``, so it is cached.
     The returned arrays are shared between calls and must not be modified.
+
+    Args:
+        dim (int): Number of dimensions.
+        points_per_dim (int): Number of quadrature points in each dimension.
+
+    Returns:
+        tuple[np.ndarray, np.ndarray]: ``standard_nodes``, a
+        ``(points_per_dim**dim, dim)`` array of nodes, and ``standard_weights``,
+        a ``(points_per_dim**dim,)`` array of weights that sum to 1.
     """
     # 1. Get 1D physicists' Gauss-Hermite nodes and strictly positive weights
     # They integrate against the weight function w(x) = exp(-x^2)
@@ -32,9 +42,27 @@ def gauss_hermite_grid(dim, points_per_dim):
 
 
 def integrate_gaussian(f, dim_f, mu, sigma, points_per_dim=5):
-    """
-    Integrates f(X) where X ~ N(mu, sigma) up to 5D using
-    Tensor Gauss-Hermite Quadrature. Weights are guaranteed to be positive.
+    """Integrate f(X) for X ~ N(mu, sigma) by tensor Gauss-Hermite quadrature.
+
+    Supports up to 5 dimensions. The quadrature weights are positive.
+
+    Args:
+        f (Callable[[np.ndarray], np.ndarray | float]): Function of one
+            node, a ``(dim,)`` array. Returns a scalar if ``dim_f`` is 1, and
+            a ``(dim_f,)`` array otherwise.
+        dim_f (int): Dimension of the output of ``f``. Use 1 for a scalar.
+        mu (np.ndarray): Mean of the Gaussian, a ``(dim,)`` array.
+        sigma (np.ndarray): Covariance matrix of the Gaussian, a ``(dim, dim)``
+            positive definite array.
+        points_per_dim (int): Number of quadrature points in each dimension.
+            Default is 5.
+
+    Returns:
+        np.ndarray | float: The integral of ``f``: a scalar if ``dim_f`` is 1,
+        and a ``(dim_f,)`` array otherwise.
+
+    Raises:
+        AssertionError: If ``mu`` has more than 5 elements.
     """
     dim = len(mu)
     assert dim <= 5, "This specific grid generation script is optimized for d <= 5"
@@ -74,6 +102,7 @@ if __name__ == "__main__":
     def my_function2(x):
         return np.array([x[0] ** 2, x[1] ** 4])
 
+    print("Testing 3D case with f(X) = sum(X^2)")
     # Run the integration using 6 points per dimension (6^3 = 216 total points)
     result = integrate_gaussian(my_function, 1, mu, sigma, points_per_dim=6)
 
@@ -89,6 +118,7 @@ if __name__ == "__main__":
     )
 
     # Analytical solution for E[X^2] is mu^2 + np.diag(sigma); for X^4 is mu^4 + 6*mu^2*np.diag(sigma) + 3*np.diag(sigma)**2
+    print("Testing 2D case with f(X) = [X[0]^2, X[1]^4]")
     analytical2 = mu[0] ** 2 + sigma[0, 0]
     analytical2_x4 = mu[1] ** 4 + 6 * mu[1] ** 2 * sigma[1, 1] + 3 * sigma[1, 1] ** 2
     print("Analytical Expected:")

@@ -23,6 +23,8 @@ from frac_blp.simulate_frac_nodemog_data import simulate_frac_nodemog_data
 
 
 class _StrictModel(BaseModel):
+    """Base model that rejects keys it does not define."""
+
     model_config = ConfigDict(extra="forbid")
 
 
@@ -61,6 +63,16 @@ class DataConfig(_StrictModel):
 
     @model_validator(mode="after")
     def _check_real_fields(self) -> "DataConfig":
+        """Check that the fields needed for real data are given and do not clash.
+
+        Returns:
+            DataConfig: The validated section, unchanged.
+
+        Raises:
+            ValueError: If a field needed for real data is missing, or if a
+                regressor is listed in both its exogenous and endogenous lists,
+                or an ``X2`` name is not in the matching ``X1`` list.
+        """
         if self.source == "real":
             missing = [
                 name
@@ -154,6 +166,17 @@ def load_config(path: str | Path) -> Config:
 
 
 def _read_table(file: Path) -> pd.DataFrame:
+    """Read a CSV or Parquet file into a DataFrame.
+
+    Args:
+        file (Path): Path to a ``.csv``, ``.parquet`` or ``.pq`` file.
+
+    Returns:
+        pd.DataFrame: The table in the file.
+
+    Raises:
+        ValueError: If the file extension is not supported.
+    """
     if file.suffix == ".csv":
         return pd.read_csv(file)
     if file.suffix in (".parquet", ".pq"):
@@ -218,6 +241,4 @@ def build_frac_data(config: Config) -> FracNoDemogData:
         names_X2_exo=data.X2_exo,
         names_X2_endo=data.X2_endo,
     )
-    # print_stars("FRAC real data:")
-    # print(frac_real_data)
     return frac_real_data

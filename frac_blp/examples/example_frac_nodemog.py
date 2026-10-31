@@ -21,7 +21,6 @@ def run_example(
     n_X1_endo: int = 1,
     n_X2_exo: int = 0,
     n_X2_endo: int = 1,
-    n_Z: int = 1,
     sigma_x: float = 1.0,
     sigma_xi: float = 1.0,
     rho_x_xi: float = np.sqrt(0.5),
@@ -29,8 +28,31 @@ def run_example(
     betas: np.ndarray = np.array([-4.3, 1.0]),
     sigmas: np.ndarray = np.array([1.0]),
 ):
-    """Simulates data and estimates it with FRAC without demographics;
-    then repeats the estimation using the interface for real data.
+    """Simulate data and estimate it with FRAC without demographics.
+
+    Then repeat the estimation using the interface for real data.
+
+    Args:
+        T (int): Number of markets. Default is 50.
+        J (int): Number of products per market. Default is 20.
+        n_X1_exo (int): Number of exogenous regressors with fixed coefficients,
+            including the constant. Default is 1.
+        n_X1_endo (int): Number of endogenous regressors with fixed coefficients.
+            Default is 1.
+        n_X2_exo (int): Number of exogenous regressors with random coefficients.
+            Default is 0.
+        n_X2_endo (int): Number of endogenous regressors with random coefficients.
+            Default is 1.
+        sigma_x (float): Standard deviation parameter of the regressors. Default is 1.0.
+        sigma_xi (float): Standard deviation of the unobserved product characteristic.
+            Default is 1.0.
+        rho_x_xi (float): Correlation between the regressors and the unobserved
+            characteristic. Default is sqrt(0.5).
+        rho_x_z (float): Correlation between the regressors and the instruments.
+            Default is sqrt(0.5).
+        betas (np.ndarray): Fixed coefficients. Default is ``[-4.3, 1.0]``.
+        sigmas (np.ndarray): Standard deviations of the random coefficients.
+            Default is ``[1.0]``.
     """
     print_stars("Hello from frac_blp!")
     simulated_frac_data = simulate_frac_nodemog_data(
@@ -40,7 +62,6 @@ def run_example(
         n_X1_endo=n_X1_endo,
         n_X2_exo=n_X2_exo,
         n_X2_endo=n_X2_endo,
-        n_Z=n_Z,
         sigma_x=sigma_x,
         sigma_xi=sigma_xi,
         rho_x_xi=rho_x_xi,
