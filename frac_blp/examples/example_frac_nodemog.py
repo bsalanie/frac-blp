@@ -27,7 +27,7 @@ def run_example(
     rho_x_z: float = np.sqrt(0.5),
     betas: np.ndarray = np.array([-4.3, 1.0]),
     sigmas: np.ndarray = np.array([1.0]),
-):
+) -> None:
     """Simulate data and estimate it with FRAC without demographics.
 
     Then repeat the estimation using the interface for real data.

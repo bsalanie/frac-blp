@@ -27,6 +27,7 @@ from pydantic import (
     BaseModel,
     ConfigDict,
     PrivateAttr,
+    ValidationInfo,
     computed_field,
     field_validator,
     model_validator,
@@ -85,7 +86,9 @@ class _FracNoDemogBase(BaseModel):
         mode="before",
     )
     @classmethod
-    def _coerce_names_lists(cls, value):
+    def _coerce_names_lists(
+        cls, value: list[str] | tuple[str, ...] | np.ndarray | None
+    ) -> list[str]:
         """Coerce a names field to a list of strings.
 
         Args:
@@ -312,7 +315,7 @@ class FracNoDemogRealData(_FracNoDemogBase):
 
     # Computed design matrices picked from X by name groups
 
-    def get_X_by_names(self, names_str) -> np.ndarray:
+    def get_X_by_names(self, names_str: str) -> np.ndarray:
         """Return the columns of ``df_X1`` named by an attribute, as floats.
 
         Args:
@@ -383,11 +386,12 @@ class FracNoDemogRealData(_FracNoDemogBase):
 
     @field_validator("df_X1", mode="before")
     @classmethod
-    def _check_df1(cls, value):
+    def _check_df1(cls, value: Any) -> pd.DataFrame:
         """Check that ``df_X1`` is a pandas DataFrame.
 
         Args:
-            value (pd.DataFrame): The regressors with fixed coefficients.
+            value (Any): The regressors with fixed coefficients, expected to be a
+                DataFrame.
 
         Returns:
             pd.DataFrame: ``value``, unchanged.
@@ -401,11 +405,11 @@ class FracNoDemogRealData(_FracNoDemogBase):
 
     @field_validator("Z", mode="before")
     @classmethod
-    def _coerce_Z(cls, value):
+    def _coerce_Z(cls, value: Any) -> np.ndarray:
         """Convert the instruments to a NumPy array.
 
         Args:
-            value (array-like): The instrument matrix, shape ``(n_obs, n_Z)``.
+            value (Any): The instrument matrix, array-like with shape ``(n_obs, n_Z)``.
 
         Returns:
             np.ndarray: ``value`` as an array."""
@@ -527,7 +531,7 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
 
     @field_validator("sigma_xi", "sigma_x")
     @classmethod
-    def _validate_sigma_xi(cls, v: float):
+    def _validate_sigma_xi(cls, v: float) -> float:
         """Check that ``sigma_x`` and ``sigma_xi`` are finite and non-negative.
 
         Args:
@@ -600,7 +604,7 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
 
     @field_validator("rho_x_z", "rho_x_xi")
     @classmethod
-    def _validate_rho(cls, v: float, info):
+    def _validate_rho(cls, v: float, info: ValidationInfo) -> float:
         """Check that a correlation parameter is finite and lies in [-1, 1].
 
         Args:

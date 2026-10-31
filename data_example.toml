@@ -4,7 +4,7 @@
 
 [data]
 source = "real"
-file = "data/simulated_data.csv"   # .csv or .parquet
+file = "data_example.csv"   # .csv or .parquet
 shares = "shares"
 instruments = ["z_1", "z_2", "z_3"]     # a constant is added automatically; do not list one
 X1_exo = ["constant"]

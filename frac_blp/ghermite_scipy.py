@@ -1,13 +1,15 @@
 """Tensor Gauss-Hermite quadrature for integrals against a Gaussian density."""
 
+from collections.abc import Callable
 from functools import lru_cache
+from typing import cast
 
 import numpy as np
 from scipy.special import roots_hermite
 
 
 @lru_cache(maxsize=None)
-def gauss_hermite_grid(dim, points_per_dim):
+def gauss_hermite_grid(dim: int, points_per_dim: int) -> tuple[np.ndarray, np.ndarray]:
     """Return tensor Gauss-Hermite nodes and normalized weights for N(0, I).
 
     The result depends only on ``dim`` and ``points_per_dim``, so it is cached.
@@ -41,7 +43,13 @@ def gauss_hermite_grid(dim, points_per_dim):
     return standard_nodes, standard_weights
 
 
-def integrate_gaussian(f, dim_f, mu, sigma, points_per_dim=5):
+def integrate_gaussian(
+    f: Callable[[np.ndarray], np.ndarray | float],
+    dim_f: int,
+    mu: np.ndarray,
+    sigma: np.ndarray,
+    points_per_dim: int = 5,
+) -> np.ndarray | float:
     """Integrate f(X) for X ~ N(mu, sigma) by tensor Gauss-Hermite quadrature.
 
     Supports up to 5 dimensions. The quadrature weights are positive.
@@ -85,7 +93,7 @@ def integrate_gaussian(f, dim_f, mu, sigma, points_per_dim=5):
             f_values[:, i_node] = f(node)
         integral = np.dot(f_values, standard_weights)
 
-    return integral
+    return cast(np.ndarray | float, integral)
 
 
 # --- Example Usage ---
@@ -95,11 +103,27 @@ if __name__ == "__main__":
     sigma = np.array([[1.0, 0.2, 0.1], [0.2, 1.5, 0.3], [0.1, 0.3, 2.0]])
 
     # Define a sample test function f(X) = sum(X^2)
-    def my_function(x):
-        return np.sum(x**2)
+    def my_function(x: np.ndarray) -> float:
+        """Return the sum of squares of the coordinates of a point.
+
+        Args:
+            x (np.ndarray): A point, a vector of shape (d,).
+
+        Returns:
+            float: The sum of the squared entries of ``x``.
+        """
+        return float(np.sum(x**2))
 
     # Define a sample test function f(X) = [X[0]^2, X[1]^4]
-    def my_function2(x):
+    def my_function2(x: np.ndarray) -> np.ndarray:
+        """Return the square of the first coordinate and the fourth power of the second.
+
+        Args:
+            x (np.ndarray): A point, a vector of shape (d,) with d >= 2.
+
+        Returns:
+            np.ndarray: The vector ``[x[0]**2, x[1]**4]``, of shape (2,).
+        """
         return np.array([x[0] ** 2, x[1] ** 4])
 
     print("Testing 3D case with f(X) = sum(X^2)")

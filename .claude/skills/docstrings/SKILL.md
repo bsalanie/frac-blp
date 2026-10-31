@@ -13,7 +13,7 @@ When adding or rewriting a docstring:
 2. Add `Args:`, `Returns:`, and `Raises:` sections in Google style. Leave
    out any section that doesn't apply.
 3. Name the type of every parameter and return value. Skip `self` and
-   `cls`.
+   `cls`. Also include type annotations in the function signature if they are not already present.
 4. Keep the code unchanged. Only add or replace docstrings.
 5. Show the updated code, not a description of the changes.
 
@@ -23,7 +23,7 @@ Google Style:
 Sections use a heading followed by an indented block. Names come first,
 then the type in parentheses, then a description.
 
-    def restock(items, name, quantity):
+    def restock(items: dict[str, int], name: str, quantity: int):
         """Add stock for one item and return its new count.
 
         Args:
