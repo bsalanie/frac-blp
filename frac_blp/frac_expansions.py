@@ -24,25 +24,30 @@ def xi_terms(
     S: np.ndarray,
     X: np.ndarray,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    """Return the successive terms of the expansion of xi on one market.
+    """Return the successive terms of the expansion of xi on all markets.
 
     xi = y - X*b - term2 * sigmas^2 - term3 * s *  sigmas^3
         - (sigmas^2)' * term4_gaussian * sigmas^2 - term4_kappa * sigmas^4 + O(sigmas^5)
 
     Args:
-        S (np.ndarray): Inside shares on the market, a J-vector.
-        X (np.ndarray): Characteristics with random coefficients, a (J, K) matrix.
+        S (np.ndarray): Inside shares, a (T, J) matrix with one row per market.
+        X (np.ndarray): Characteristics with random coefficients, a (T, J, K) array.
 
     Returns:
-        tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]: ``term2``, a (J, K)
-        matrix of order 2 terms; ``term3``, a (J, K) matrix of order 3 terms;
-        ``term4_gaussian``, a (J, K, K) array of Gaussian order 4 terms; and
-        ``term4_kappa``, a (J, K) matrix of order 4 terms from excess kurtosis.
+        tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]: ``term2``, a (T, J, K)
+        array of order 2 terms; ``term3``, a (T, J, K) array of order 3 terms;
+        ``term4_gaussian``, a (T, J, K, K) array of Gaussian order 4 terms; and
+        ``term4_kappa``, a (T, J, K) array of order 4 terms from excess kurtosis.
     """
     X2 = X * X
     X3 = X2 * X
-    e1, e2, e3 = S @ X, S @ X2, S @ X3
-    v = np.einsum("j,jl,jm->lm", S, X, X) - np.outer(e1, e1)
+    # market-level moments, each a (T, K) matrix
+    e1 = np.einsum("tj,tjk->tk", S, X)
+    e2 = np.einsum("tj,tjk->tk", S, X2)
+    e3 = np.einsum("tj,tjk->tk", S, X3)
+    v = np.einsum("tj,tjl,tjm->tlm", S, X, X) - np.einsum("tl,tm->tlm", e1, e1)
+    # broadcast the market-level moments over the J products
+    e1, e2, e3 = e1[:, None, :], e2[:, None, :], e3[:, None, :]
 
     # order 2:  sum_l (sigma^2_l * term2_l)
     term2 = X * (X / 2.0 - e1)
@@ -60,6 +65,6 @@ def xi_terms(
         - e1**3
         - e3 / 6
     )
-    term4_gaussian = -np.einsum("lm,jl,jm->jlm", v, X, X / 2.0 - e1)
+    term4_gaussian = -np.einsum("tlm,tjl,tjm->tjlm", v, X, X / 2.0 - e1)
 
     return term2, term3, term4_gaussian, term4_kappa

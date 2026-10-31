@@ -1,3 +1,3 @@
-# frac_classes module
+# ghremite_scipy module
 
-::: frac_blp.frac_classes
+::: frac_blp.ghermite_scipy

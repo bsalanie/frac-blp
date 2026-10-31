@@ -11,8 +11,11 @@ nav:
   - Home: index.md
   - API Reference: 
     - utilities: frac_utils.md
+    - Gauss-Hernmite quadrature: ghermite_scipy.md
+    - two-stage least-squares: twosls.md
+    - configuration: config.md
     - data classes: frac_classes.md
-    - artificial regressors: artificial_regressors.md
+    - artificial regressors: frac_expansions.md
     - simulating data: simulate_frac_nodemog_data.md
     - FRAC estimation: frac_nodemog.md
   - example run: example_frac_nodemog.md

@@ -1,3 +1,3 @@
-# artificial_regressors module
+# frac_expansions module
 
-::: frac_blp.artificial_regressors
+::: frac_blp.frac_expansions

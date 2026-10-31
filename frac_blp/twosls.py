@@ -44,11 +44,11 @@ def tsls_estimate(
     # First stage: project X onto Z
     if X_proj is None:
         X_proj = proj_on_Z(X, Z)[0]
-    D_mat = -X_proj
 
     n_obs, n_x = X.shape
 
     if optimal_instruments:
+        D_mat = -X_proj
         Z_opt = D_mat
     else:
         Z_opt = Z
