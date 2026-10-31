@@ -27,7 +27,6 @@ from pydantic import (
     BaseModel,
     ConfigDict,
     PrivateAttr,
-    ValidationError,
     computed_field,
     field_validator,
     model_validator,
@@ -87,6 +86,17 @@ class _FracNoDemogBase(BaseModel):
     )
     @classmethod
     def _coerce_names_lists(cls, value):
+        """Coerce a names field to a list of strings.
+
+        Args:
+            value (list[str] | tuple[str, ...] | np.ndarray | None): The names. None
+                gives an empty list.
+
+        Returns:
+            list[str]: The names as a list of strings.
+
+        Raises:
+            TypeError: If ``value`` is not a list, tuple, array, or None."""
         # Accept None/tuples/ndarrays; ensure concrete list[str]
         if value is None:
             return []
@@ -104,6 +114,16 @@ class _FracNoDemogBase(BaseModel):
     @field_validator("T", "J", mode="before")
     @classmethod
     def _validate_positive_int(cls, value: int) -> int:
+        """Check that ``T`` and ``J`` are strictly positive.
+
+        Args:
+            value (int): The number of markets or of products per market.
+
+        Returns:
+            int: ``value`` as an int.
+
+        Raises:
+            ValueError: If ``value`` is not strictly positive."""
         if value <= 0:
             raise ValueError("T and J must be strictly positive integers.")
         return int(value)
@@ -120,6 +140,16 @@ class _FracNoDemogBase(BaseModel):
 
     @model_validator(mode="after")
     def _validate_names_subsets(self) -> _FracNoDemogBase:
+        """Check that the X2 names are subsets of the matching X1 names.
+
+        Also check that at least one of the four names lists is non-empty.
+
+        Returns:
+            _FracNoDemogBase: The validated model, unchanged.
+
+        Raises:
+            ValueError: If an X2 name is not in the matching X1 list, or if all four
+                names lists are empty."""
         # names_X2_exo must be a sublist of names_X1_exo
         missing_exo = [n for n in self.names_X2_exo if n not in self.names_X1_exo]
         if missing_exo:
@@ -167,6 +197,14 @@ class _FracNoDemogBase(BaseModel):
         return self.names_X2_exo + self.names_X2_endo
 
     def names_len(self, name_str: str) -> int:
+        """Return the number of names in a names attribute.
+
+        Args:
+            name_str (str): Name of the attribute holding a names list, such as
+                ``"names_X1_exo"``.
+
+        Returns:
+            int: The length of the list, or 0 if it is missing or empty."""
         names = getattr(self, name_str, None)
         return 0 if not names else len(names)
 
@@ -174,31 +212,55 @@ class _FracNoDemogBase(BaseModel):
     @computed_field(return_type=int)  # type: ignore[misc]
     @property
     def n_X1_exo(self) -> int:
+        """Return the number of exogenous regressors with fixed coefficients.
+
+        Returns:
+            int: The length of ``names_X1_exo``."""
         return self.names_len("names_X1_exo")
 
     @computed_field(return_type=int)  # type: ignore[misc]
     @property
     def n_X1_endo(self) -> int:
+        """Return the number of endogenous regressors with fixed coefficients.
+
+        Returns:
+            int: The length of ``names_X1_endo``."""
         return self.names_len("names_X1_endo")
 
     @computed_field(return_type=int)  # type: ignore[misc]
     @property
     def n_X2_exo(self) -> int:
+        """Return the number of exogenous regressors with random coefficients.
+
+        Returns:
+            int: The length of ``names_X2_exo``."""
         return self.names_len("names_X2_exo")
 
     @computed_field(return_type=int)  # type: ignore[misc]
     @property
     def n_X2_endo(self) -> int:
+        """Return the number of endogenous regressors with random coefficients.
+
+        Returns:
+            int: The length of ``names_X2_endo``."""
         return self.names_len("names_X2_endo")
 
     @computed_field(return_type=int)  # type: ignore[misc]
     @property
     def n_X1(self) -> int:
+        """Return the number of regressors with fixed coefficients.
+
+        Returns:
+            int: ``n_X1_exo + n_X1_endo``."""
         return self.n_X1_exo + self.n_X1_endo
 
     @computed_field(return_type=int)  # type: ignore[misc]
     @property
     def n_X2(self) -> int:
+        """Return the number of regressors with random coefficients.
+
+        Returns:
+            int: ``n_X2_exo + n_X2_endo``."""
         return self.n_X2_exo + self.n_X2_endo
 
     def _check_shares(self, shares: np.ndarray) -> None:
@@ -251,6 +313,15 @@ class FracNoDemogRealData(_FracNoDemogBase):
     # Computed design matrices picked from X by name groups
 
     def get_X_by_names(self, names_str) -> np.ndarray:
+        """Return the columns of ``df_X1`` named by an attribute, as floats.
+
+        Args:
+            names_str (str): Name of the attribute holding the list of columns, such as
+                ``"names_X1_exo"``.
+
+        Returns:
+            np.ndarray: An ``(n_obs, k)`` array with the selected columns, where ``k``
+            is the length of the list; ``(n_obs, 0)`` if the list is empty."""
         cols = getattr(self, names_str, []) or []
         if len(cols) == 0:
             return np.empty((self.n_obs, 0))
@@ -259,54 +330,109 @@ class FracNoDemogRealData(_FracNoDemogBase):
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
     @property
     def X1_exo(self) -> np.ndarray:
+        """Return the exogenous regressors with fixed coefficients.
+
+        Returns:
+            np.ndarray: An ``(n_obs, n_X1_exo)`` array."""
         return self.get_X_by_names("names_X1_exo")
 
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
     @property
     def X1_endo(self) -> np.ndarray:
+        """Return the endogenous regressors with fixed coefficients.
+
+        Returns:
+            np.ndarray: An ``(n_obs, n_X1_endo)`` array."""
         return self.get_X_by_names("names_X1_endo")
 
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
     @property
     def X2_exo(self) -> np.ndarray:
+        """Return the exogenous regressors with random coefficients.
+
+        Returns:
+            np.ndarray: An ``(n_obs, n_X2_exo)`` array."""
         return self.get_X_by_names("names_X2_exo")
 
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
     @property
     def X2_endo(self) -> np.ndarray:
+        """Return the endogenous regressors with random coefficients.
+
+        Returns:
+            np.ndarray: An ``(n_obs, n_X2_endo)`` array."""
         return self.get_X_by_names("names_X2_endo")
 
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
     @property
     def X1(self) -> np.ndarray:
+        """Return all regressors with fixed coefficients.
+
+        Returns:
+            np.ndarray: An ``(n_obs, n_X1)`` array, with the exogenous columns first."""
         return make_X(self.X1_exo, self.X1_endo)
 
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
     @property
     def X2(self) -> np.ndarray:
+        """Return all regressors with random coefficients.
+
+        Returns:
+            np.ndarray: An ``(n_obs, n_X2)`` array, with the exogenous columns first."""
         return make_X(self.X2_exo, self.X2_endo)
 
     @field_validator("df_X1", mode="before")
     @classmethod
     def _check_df1(cls, value):
+        """Check that ``df_X1`` is a pandas DataFrame.
+
+        Args:
+            value (pd.DataFrame): The regressors with fixed coefficients.
+
+        Returns:
+            pd.DataFrame: ``value``, unchanged.
+
+        Raises:
+            TypeError: If ``value`` is not a DataFrame."""
         if isinstance(value, pd.DataFrame):
             return value
         else:
-            raise ValidationError("df_X1 must be a pandas DataFrame or array-like.")
+            raise TypeError("df_X1 must be a pandas DataFrame.")
 
     @field_validator("Z", mode="before")
     @classmethod
     def _coerce_Z(cls, value):
+        """Convert the instruments to a NumPy array.
+
+        Args:
+            value (array-like): The instrument matrix, shape ``(n_obs, n_Z)``.
+
+        Returns:
+            np.ndarray: ``value`` as an array."""
         return np.asarray(value)
 
     @field_validator("shares", mode="before")
     @classmethod
     def _coerce_shares(cls, value: np.ndarray) -> np.ndarray:
+        """Flatten the observed shares to a 1D array.
+
+        Args:
+            value (array-like): The observed shares, stacked by market.
+
+        Returns:
+            np.ndarray: The shares as a 1D array."""
         shares = np.asarray(value).ravel()
         return shares
 
     @model_validator(mode="after")
     def _validate_shares(self) -> FracNoDemogRealData:
+        """Check the observed shares once the model is built.
+
+        Returns:
+            FracNoDemogRealData: The validated model, unchanged.
+
+        Raises:
+            ValueError: If the shares fail the checks in ``_check_shares``."""
         self._check_shares(self.shares)
         return self
 
@@ -372,6 +498,16 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
     @field_validator("T", "J", mode="before")
     @classmethod
     def _validate_positive_int(cls, value: int) -> int:
+        """Check that ``T`` and ``J`` are strictly positive.
+
+        Args:
+            value (int): The number of markets or of products per market.
+
+        Returns:
+            int: ``value`` as an int.
+
+        Raises:
+            ValueError: If ``value`` is not strictly positive."""
         if value <= 0:
             raise ValueError("T and J must be strictly positive integers.")
         return int(value)
@@ -379,12 +515,29 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
     @field_validator("betas", "sigmas", mode="before")
     @classmethod
     def _coerce_vectors(cls, value: np.ndarray) -> np.ndarray:
+        """Coerce ``betas`` or ``sigmas`` to a 1D array.
+
+        Args:
+            value (np.ndarray): The vector to coerce.
+
+        Returns:
+            np.ndarray: ``value`` as a 1D array."""
         # Coerce to a 1-D array; avoid squeeze creating 0-D for 1x1 inputs.
         return np.asarray(value).ravel()
 
     @field_validator("sigma_xi", "sigma_x")
     @classmethod
     def _validate_sigma_xi(cls, v: float):
+        """Check that ``sigma_x`` and ``sigma_xi`` are finite and non-negative.
+
+        Args:
+            v (float): The value to check.
+
+        Returns:
+            float: ``v`` as a float.
+
+        Raises:
+            ValueError: If ``v`` is not finite or is negative."""
         if not np.isfinite(v):
             raise ValueError("sigma_x and sigma_xi must be finite.")
         if v < 0.0:
@@ -393,6 +546,13 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
 
     @model_validator(mode="after")
     def _validate_betas_length(self) -> FracNoDemogSimulatedData:
+        """Check that ``betas`` is 1D with length ``n_X1``.
+
+        Returns:
+            FracNoDemogSimulatedData: The validated model, unchanged.
+
+        Raises:
+            ValueError: If ``betas`` is not 1D or its length is not ``n_X1``."""
         if self.betas.ndim != 1:
             raise ValueError("betas must be a 1D array.")
         if self.betas.shape[0] != self.n_X1:
@@ -403,6 +563,13 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
 
     @model_validator(mode="after")
     def _validate_sigmas_length(self) -> FracNoDemogSimulatedData:
+        """Check that ``sigmas`` is 1D with length ``n_X2``.
+
+        Returns:
+            FracNoDemogSimulatedData: The validated model, unchanged.
+
+        Raises:
+            ValueError: If ``sigmas`` is not 1D or its length is not ``n_X2``."""
         expected_n2 = int(self.n_X2_exo) + int(self.n_X2_endo)
         if self.sigmas.ndim != 1:
             raise ValueError("sigmas must be a 1D array.")
@@ -415,6 +582,16 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
     @field_validator("sigmas")
     @classmethod
     def _validate_vector_nonneg(cls, v: np.ndarray) -> np.ndarray:
+        """Check that ``sigmas`` is finite and non-negative.
+
+        Args:
+            v (np.ndarray): The standard deviations of the random coefficients.
+
+        Returns:
+            np.ndarray: ``v``, unchanged.
+
+        Raises:
+            ValueError: If any entry is not finite or is negative."""
         if not np.all(np.isfinite(v)):
             raise ValueError("sigmas must contain only finite values.")
         if np.any(v < 0.0):
@@ -424,6 +601,18 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
     @field_validator("rho_x_z", "rho_x_xi")
     @classmethod
     def _validate_rho(cls, v: float, info):
+        """Check that a correlation parameter is finite and lies in [-1, 1].
+
+        Args:
+            v (float): The correlation to check.
+            info (ValidationInfo): Validation context. Its ``field_name`` names the
+                parameter in error messages.
+
+        Returns:
+            float: ``v`` as a float.
+
+        Raises:
+            ValueError: If ``v`` is not finite or lies outside [-1, 1]."""
         if not np.isfinite(v):
             raise ValueError(f"{info.field_name} must be finite.")
         if v < -1.0 or v > 1.0:
@@ -518,6 +707,14 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
 
     # Computed design matrices generated according to simulation parameters
     def get_X1_piece(self, start: int, n: int) -> np.ndarray:
+        """Return a block of the regressors with fixed coefficients.
+
+        Args:
+            start (int): Column index in ``X1`` where the block starts.
+            n (int): Number of columns in the block.
+
+        Returns:
+            np.ndarray: An ``(n_obs, n)`` array; ``(n_obs, 0)`` if ``n`` is 0."""
         n_obs = self.n_obs
         if n == 0:
             return np.empty((n_obs, 0)).astype(np.float64)
@@ -527,6 +724,14 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
             )
 
     def get_X2_piece(self, names: list[str]) -> np.ndarray:
+        """Return the regressors with random coefficients that have the given names.
+
+        Args:
+            names (list[str]): Names of the columns of ``X``.
+
+        Returns:
+            np.ndarray: An ``(n_obs, len(names))`` array; ``(n_obs, 0)`` if ``names``
+            is empty."""
         if len(names) == 0:
             return np.empty((self.n_obs, 0))
         cols = self.X[names].values.astype(np.float64)
@@ -535,31 +740,55 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
     @property
     def X1_exo(self) -> np.ndarray:
+        """Return the exogenous regressors with fixed coefficients.
+
+        Returns:
+            np.ndarray: An ``(n_obs, n_X1_exo)`` array."""
         return self.get_X1_piece(0, self.n_X1_exo)
 
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
     @property
     def X1_endo(self) -> np.ndarray:
+        """Return the endogenous regressors with fixed coefficients.
+
+        Returns:
+            np.ndarray: An ``(n_obs, n_X1_endo)`` array."""
         return self.get_X1_piece(self.n_X1_exo, self.n_X1_endo)
 
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
     @property
     def X2_exo(self) -> np.ndarray:
+        """Return the exogenous regressors with random coefficients.
+
+        Returns:
+            np.ndarray: An ``(n_obs, n_X2_exo)`` array."""
         return self.get_X2_piece(self.names_X2_exo)
 
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
     @property
     def X2_endo(self) -> np.ndarray:
+        """Return the endogenous regressors with random coefficients.
+
+        Returns:
+            np.ndarray: An ``(n_obs, n_X2_endo)`` array."""
         return self.get_X2_piece(self.names_X2_endo)
 
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
     @property
     def X1(self) -> np.ndarray:
+        """Return all regressors with fixed coefficients.
+
+        Returns:
+            np.ndarray: An ``(n_obs, n_X1)`` array, with the exogenous columns first."""
         return make_X(self.X1_exo, self.X1_endo)
 
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
     @property
     def X2(self) -> np.ndarray:
+        """Return all regressors with random coefficients.
+
+        Returns:
+            np.ndarray: An ``(n_obs, n_X2)`` array, with the exogenous columns first."""
         return make_X(self.X2_exo, self.X2_endo)
 
     @computed_field(return_type=np.ndarray)  # type: ignore[misc]
