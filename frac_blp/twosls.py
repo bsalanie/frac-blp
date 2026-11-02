@@ -1,9 +1,12 @@
 """TSLS function that can be iterated."""
 
 import numpy as np
-from bs_python_utils.bsutils import print_stars
+from rich.console import Console
+from rich.table import Table
 
 from frac_blp.frac_utils import make_centered_covariance, proj_on_Z
+
+console = Console()
 
 
 def tsls_estimate(
@@ -94,8 +97,11 @@ def print_tsls_results(
         names_coeffs = [f"coeff_{i}" for i in range(n_coeffs)]
     if title is None:
         title = "Two-stage least squares estimates:"
-    print_stars(title)
-    for i in range(len(names_coeffs)):
-        print(
-            f"   {names_coeffs[i]}: {estimated_coeffs[i]:.3f} (std err: {estimated_stderrs[i]:.3f})"
-        )
+    console.rule(title)
+    table = Table(show_header=True, header_style="bold")
+    table.add_column("Coefficient", style="cyan", no_wrap=True)
+    table.add_column("Estimate", justify="right")
+    table.add_column("Std err", justify="right")
+    for name, coeff, stderr in zip(names_coeffs, estimated_coeffs, estimated_stderrs):
+        table.add_row(name, f"{coeff:.3f}", f"{stderr:.3f}")
+    console.print(table)

@@ -1,7 +1,7 @@
 site_name: frac-blp
 repo_url: https://github.com/bsalanie/frac-blp
 site_url: https://bsalanie.github.io/frac-blp
-site_description: my Python utilities
+site_description: FRAC (Salanie-Wolak) estimation of macro BLP models
 site_author: Bernard Salanie
 edit_uri: edit/main/docs/
 repo_name: bsalanie/frac-blp
@@ -17,7 +17,8 @@ nav:
     - data classes: frac_classes.md
     - artificial regressors: frac_expansions.md
     - simulating data: simulate_frac_nodemog_data.md
-    - FRAC estimation: frac_nodemog.md
+    - FRAC estimation: frac_nodemog_estimate.md
+    - main driver: frac_nodemog.md
   - example run: example_frac_nodemog.md
 
 

@@ -1,103 +1,90 @@
 """Executable example demonstrating FRAC estimation without demographics.
-The example uses simulated data with all `X1` variables generated as N(0,1) iid;
-the user can modify the dimensions and other parameters of the simulation as desired.
+
+The example runs two estimations from TOML configuration files in `frac_blp/configs/`:
+first on simulated data (`simulated.toml`), then on a data file read through the
+real-data interface (`example_config.toml`). Edit those files to change the dimensions,
+parameters and estimation options.
 """
 
-import numpy as np
-import pandas as pd
-from bs_python_utils.bsutils import print_stars
+from pathlib import Path
 
-from frac_blp.frac_classes import FracNoDemogRealData
-from frac_blp.frac_nodemog import frac_nodemog_estimate
-from frac_blp.simulate_frac_nodemog_data import (
-    simulate_frac_nodemog_data,
-)
+from rich.console import Console
+from rich.panel import Panel
+from rich.text import Text
+
+from frac_blp.config import build_frac_data, load_config
+from frac_blp.frac_nodemog_estimate import nodemog_estimate
+
+console = Console()
+
+CONFIG_DIR = Path(__file__).resolve().parent.parent / "configs"
 
 
 def run_example(
-    T: int = 50,
-    J: int = 20,
-    n_X1_exo: int = 1,
-    n_X1_endo: int = 1,
-    n_X2_exo: int = 0,
-    n_X2_endo: int = 1,
-    sigma_x: float = 1.0,
-    sigma_xi: float = 1.0,
-    rho_x_xi: float = np.sqrt(0.5),
-    rho_x_z: float = np.sqrt(0.5),
-    betas: np.ndarray = np.array([-4.3, 1.0]),
-    sigmas: np.ndarray = np.array([1.0]),
+    simulated_config: Path = CONFIG_DIR / "simulated.toml",
+    real_config: Path = CONFIG_DIR / "example_config.toml",
 ) -> None:
-    """Simulate data and estimate it with FRAC without demographics.
-
-    Then repeat the estimation using the interface for real data.
+    """Estimate FRAC without demographics on simulated data, then on a data file.
 
     Args:
-        T (int): Number of markets. Default is 50.
-        J (int): Number of products per market. Default is 20.
-        n_X1_exo (int): Number of exogenous regressors with fixed coefficients,
-            including the constant. Default is 1.
-        n_X1_endo (int): Number of endogenous regressors with fixed coefficients.
-            Default is 1.
-        n_X2_exo (int): Number of exogenous regressors with random coefficients.
-            Default is 0.
-        n_X2_endo (int): Number of endogenous regressors with random coefficients.
-            Default is 1.
-        sigma_x (float): Standard deviation parameter of the regressors. Default is 1.0.
-        sigma_xi (float): Standard deviation of the unobserved product characteristic.
-            Default is 1.0.
-        rho_x_xi (float): Correlation between the regressors and the unobserved
-            characteristic. Default is sqrt(0.5).
-        rho_x_z (float): Correlation between the regressors and the instruments.
-            Default is sqrt(0.5).
-        betas (np.ndarray): Fixed coefficients. Default is ``[-4.3, 1.0]``.
-        sigmas (np.ndarray): Standard deviations of the random coefficients.
-            Default is ``[1.0]``.
+        simulated_config (Path): TOML file describing the simulation and the
+            estimation options. Default is `configs/simulated.toml`.
+        real_config (Path): TOML file describing the data file and the estimation
+            options. Default is `configs/example_config.toml`.
     """
-    print_stars("Hello from frac_blp!")
-    simulated_frac_data = simulate_frac_nodemog_data(
-        T=T,
-        J=J,
-        n_X1_exo=n_X1_exo,
-        n_X1_endo=n_X1_endo,
-        n_X2_exo=n_X2_exo,
-        n_X2_endo=n_X2_endo,
-        sigma_x=sigma_x,
-        sigma_xi=sigma_xi,
-        rho_x_xi=rho_x_xi,
-        rho_x_z=rho_x_z,
-        betas=betas,
-        sigmas=sigmas,
+    console.print(
+        Panel(
+            Text("Hello from frac_blp!", justify="center", style="bold magenta"),
+            border_style="magenta",
+            padding=(1, 2),
+        )
     )
-    print_stars("Simulated Data:")
-    print(simulated_frac_data)
+    config = load_config(simulated_config)
+    simulated_frac_data = build_frac_data(config)
+    console.print(
+        Panel(
+            Text("Simulated data:", justify="center", style="bold"),
+            border_style="blue",
+            padding=(1, 2),
+        )
+    )
+    console.print(
+        Panel(Text(str(simulated_frac_data).rstrip()), title="Dataset", expand=False)
+    )
 
-    print_stars("Estimating with FRAC")
-    _, _ = frac_nodemog_estimate(simulated_frac_data, degree_Z=3, degree_X1=3)
+    console.rule("Estimating with FRAC")
+    est = config.estimation
+    _, _ = nodemog_estimate(
+        simulated_frac_data,
+        degree_Z=est.degree_Z,
+        degree_X1=est.degree_X1,
+        optimal_instruments=est.optimal_instruments,
+        run_projections=est.run_projections,
+    )
 
-    print_stars("Example with the real data interface:")
-    df_X1 = pd.DataFrame(
-        np.column_stack(
-            (
-                simulated_frac_data.X1_exo,
-                simulated_frac_data.X1_endo,
-            )
-        ),
-        columns=simulated_frac_data.names_X1,
+    console.print(
+        Panel(
+            Text(
+                "Example with the real data interface:", justify="center", style="bold"
+            ),
+            border_style="blue",
+            padding=(1, 2),
+        )
     )
-    real_frac_data = FracNoDemogRealData(
-        T=simulated_frac_data.T,
-        J=simulated_frac_data.J,
-        df_X1=df_X1,
-        Z=simulated_frac_data.Z,
-        names_X1_exo=simulated_frac_data.names_X1_exo,
-        names_X1_endo=simulated_frac_data.names_X1_endo,
-        names_X2_exo=simulated_frac_data.names_X2_exo,
-        names_X2_endo=simulated_frac_data.names_X2_endo,
-        shares=simulated_frac_data.shares,
+    config = load_config(real_config)
+    real_frac_data = build_frac_data(config)
+    console.print(
+        Panel(Text(str(real_frac_data).rstrip()), title="Dataset", expand=False)
     )
-    print_stars("Estimating with FRAC")
-    _, _ = frac_nodemog_estimate(real_frac_data, degree_Z=3, degree_X1=3)
+    console.rule("Estimating with FRAC")
+    est = config.estimation
+    _, _ = nodemog_estimate(
+        real_frac_data,
+        degree_Z=est.degree_Z,
+        degree_X1=est.degree_X1,
+        optimal_instruments=est.optimal_instruments,
+        run_projections=est.run_projections,
+    )
 
 
 if __name__ == "__main__":

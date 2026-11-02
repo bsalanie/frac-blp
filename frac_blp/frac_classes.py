@@ -17,12 +17,10 @@ Conventions:
 
 from __future__ import annotations
 
-from textwrap import dedent
 from typing import Any, cast
 
 import numpy as np
 import pandas as pd
-from bs_python_utils.bsutils import print_stars
 from pydantic import (
     BaseModel,
     ConfigDict,
@@ -833,7 +831,6 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
         shares = np.zeros(n_obs)
         # Handle the degenerate case n_X2 == 0 (no random coefficients):
         if n_X2 == 0:
-            zero_share = np.zeros(self.T)
             for t in range(T):
                 this_market = slice(t * J, (t + 1) * J)
                 these_mean_utils = mean_utils[this_market]
@@ -842,7 +839,6 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
                 exp_utils = np.exp(shifted)
                 denom = np.exp(-max_util) + np.sum(exp_utils)
                 shares[this_market] = exp_utils / denom
-                zero_share[t] = 1.0 - shares[this_market].sum()
         else:
             # Quadrature nodes for eps ~ N(0, diag(sigmas^2)), scaled by sigmas
             std_nodes, std_weights = gauss_hermite_grid(n_X2, 5)
@@ -865,20 +861,7 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
                     "n,tnj->tj", std_weights, exp_utils / denom
                 )
             shares = shares_mkt.reshape(n_obs)
-            zero_share = 1.0 - shares_mkt.sum(axis=1)
 
-        print_stars(
-            dedent(
-                f"""
-                    Data generation completed; the average zero share is {zero_share.mean():.4f}
-                    """
-            )
-        )
-        df_sim = pd.DataFrame(X1, columns=self.names_X1)
-        df_sim["shares"] = shares
-        for i in range(1, self.n_X1_endo + 1):  # skip constant
-            df_sim[f"z_{i}"] = self.Z[:, i]
-        df_sim.to_csv("configs/data/simulated_data.csv", index=False)
         return shares
 
     def __str__(self) -> str:
@@ -896,6 +879,8 @@ class FracNoDemogSimulatedData(_FracNoDemogBase):
         desc += f"  Names of endogeneous variables with random coefficients: {self.names_X2_endo}\n"
         desc += f"  Betas: {self.betas}\n"
         desc += f"  Sigmas: {self.sigmas}\n"
+        zero_share = 1.0 - self.shares.reshape((self.T, self.J)).sum(axis=1)
+        desc += f"  Average zero share (S0): {zero_share.mean():.4f}\n"
         return desc
 
 
