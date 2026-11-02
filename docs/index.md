@@ -66,6 +66,13 @@ $$
 \frac{(n_{1x}+1)(n_{1x}+2)}{2} \times \left(\frac{(n_{Z}+1)(n_{Z}+2)}{2}-1\right).
 $$
 
+#### running the program
+After you download the package, `frac_nodemog --example` will run an example that both simulates and estimates a model.
+
+To run the estimation on your own data and configuration: create a `my_data.csv` (or Parquet) file; a `my_model_config.toml` configuration file that has `data="my_data.csv"`, and run
+```
+frac_nodemog my_model_config.toml
+```
 
 
 #### outputs
@@ -79,6 +86,9 @@ They are saved in the text file indicated as `results_file` in the configuration
 
 
 ### Release notes
+
+#### 0.6 (November 2, 2026)
+Improved the printing and created the `frac_nodemog` script.
 
 #### 0.5 (October 31, 2026)
 Improved and accelerated. Uses a TOML configuration file for the parameters.

@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="my Python utilities">
+        <meta name="description" content="FRAC (Salanie-Wolak) estimation of macro BLP models">
       
       
         <meta name="author" content="Bernard Salanie">
@@ -417,6 +417,75 @@
   
   
     <li class="md-nav__item">
+      <a href="ghermite_scipy.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Gauss-Hernmite quadrature
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="twosls.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    two-stage least-squares
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="config.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="frac_classes.html" class="md-nav__link">
         
   
@@ -440,7 +509,7 @@
   
   
     <li class="md-nav__item">
-      <a href="artificial_regressors.html" class="md-nav__link">
+      <a href="frac_expansions.html" class="md-nav__link">
         
   
   
@@ -486,12 +555,35 @@
   
   
     <li class="md-nav__item">
-      <a href="frac_nodemog.html" class="md-nav__link">
+      <a href="frac_nodemog_estimate.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     FRAC estimation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="frac_nodemog.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    main driver
     
   </span>
   
@@ -664,9 +756,11 @@
 <a id="frac_blp.examples.example_frac_nodemog"></a>
     <div class="doc doc-contents first">
 
-        <p>Executable example demonstrating FRAC estimation without demographics.
-The example uses simulated data with all <code>X1</code> variables generated as N(0,1) iid;
-the user can modify the dimensions and other parameters of the simulation as desired.</p>
+        <p>Executable example demonstrating FRAC estimation without demographics.</p>
+<p>The example runs two estimations from TOML configuration files in <code>frac_blp/configs/</code>:
+first on simulated data (<code>simulated.toml</code>), then on a data file read through the
+real-data interface (<code>example_config.toml</code>). Edit those files to change the dimensions,
+parameters and estimation options.</p>
 
 
 
@@ -692,26 +786,68 @@ the user can modify the dimensions and other parameters of the simulation as des
 
 
 <h2 id="frac_blp.examples.example_frac_nodemog.run_example" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">run_example</span><span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">n_X1_exo</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_X1_endo</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_X2_exo</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_X2_endo</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_Z</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sigma_x</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">sigma_xi</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">rho_x_xi</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">rho_x_z</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">betas</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">4.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]),</span> <span class="n">sigmas</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]))</span></code>
+            <code class="highlight language-python"><span class="n">run_example</span><span class="p">(</span><span class="n">simulated_config</span><span class="o">=</span><span class="n">CONFIG_DIR</span> <span class="o">/</span> <span class="s1">&#39;simulated.toml&#39;</span><span class="p">,</span> <span class="n">real_config</span><span class="o">=</span><span class="n">CONFIG_DIR</span> <span class="o">/</span> <span class="s1">&#39;example_config.toml&#39;</span><span class="p">)</span></code>
 
 <a href="#frac_blp.examples.example_frac_nodemog.run_example" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
     <div class="doc doc-contents ">
 
-        <p>Simulates data and estimates it with FRAC without demographics;
-then repeats the estimation using the interface for real data.</p>
+        <p>Estimate FRAC without demographics on simulated data, then on a data file.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>simulated_config</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>TOML file describing the simulation and the
+estimation options. Default is <code>configs/simulated.toml</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code><span title="frac_blp.examples.example_frac_nodemog.CONFIG_DIR">CONFIG_DIR</span> / &#39;simulated.toml&#39;</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>real_config</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>TOML file describing the data file and the estimation
+options. Default is <code>configs/example_config.toml</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code><span title="frac_blp.examples.example_frac_nodemog.CONFIG_DIR">CONFIG_DIR</span> / &#39;example_config.toml&#39;</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
             <details class="quote">
               <summary>Source code in <code>frac_blp/examples/example_frac_nodemog.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">23</span>
 <span class="normal">24</span>
 <span class="normal">25</span>
 <span class="normal">26</span>
@@ -767,69 +903,79 @@ then repeats the estimation using the interface for real data.</p>
 <span class="normal">76</span>
 <span class="normal">77</span>
 <span class="normal">78</span>
-<span class="normal">79</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run_example</span><span class="p">(</span>
-    <span class="n">T</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
-    <span class="n">J</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
-    <span class="n">n_X1_exo</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="n">n_X1_endo</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="n">n_X2_exo</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">n_X2_endo</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="n">n_Z</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="n">sigma_x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-    <span class="n">sigma_xi</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-    <span class="n">rho_x_xi</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span>
-    <span class="n">rho_x_z</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span>
-    <span class="n">betas</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">4.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]),</span>
-    <span class="n">sigmas</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]),</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simulates data and estimates it with FRAC without demographics;</span>
-<span class="sd">    then repeats the estimation using the interface for real data.</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run_example</span><span class="p">(</span>
+    <span class="n">simulated_config</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">CONFIG_DIR</span> <span class="o">/</span> <span class="s2">&quot;simulated.toml&quot;</span><span class="p">,</span>
+    <span class="n">real_config</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">CONFIG_DIR</span> <span class="o">/</span> <span class="s2">&quot;example_config.toml&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimate FRAC without demographics on simulated data, then on a data file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        simulated_config (Path): TOML file describing the simulation and the</span>
+<span class="sd">            estimation options. Default is `configs/simulated.toml`.</span>
+<span class="sd">        real_config (Path): TOML file describing the data file and the estimation</span>
+<span class="sd">            options. Default is `configs/example_config.toml`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">print_stars</span><span class="p">(</span><span class="s2">&quot;Hello from frac_blp!&quot;</span><span class="p">)</span>
-    <span class="n">simulated_frac_data</span> <span class="o">=</span> <span class="n">simulate_frac_nodemog_data</span><span class="p">(</span>
-        <span class="n">T</span><span class="o">=</span><span class="n">T</span><span class="p">,</span>
-        <span class="n">J</span><span class="o">=</span><span class="n">J</span><span class="p">,</span>
-        <span class="n">n_X1_exo</span><span class="o">=</span><span class="n">n_X1_exo</span><span class="p">,</span>
-        <span class="n">n_X1_endo</span><span class="o">=</span><span class="n">n_X1_endo</span><span class="p">,</span>
-        <span class="n">n_X2_exo</span><span class="o">=</span><span class="n">n_X2_exo</span><span class="p">,</span>
-        <span class="n">n_X2_endo</span><span class="o">=</span><span class="n">n_X2_endo</span><span class="p">,</span>
-        <span class="n">n_Z</span><span class="o">=</span><span class="n">n_Z</span><span class="p">,</span>
-        <span class="n">sigma_x</span><span class="o">=</span><span class="n">sigma_x</span><span class="p">,</span>
-        <span class="n">sigma_xi</span><span class="o">=</span><span class="n">sigma_xi</span><span class="p">,</span>
-        <span class="n">rho_x_xi</span><span class="o">=</span><span class="n">rho_x_xi</span><span class="p">,</span>
-        <span class="n">rho_x_z</span><span class="o">=</span><span class="n">rho_x_z</span><span class="p">,</span>
-        <span class="n">betas</span><span class="o">=</span><span class="n">betas</span><span class="p">,</span>
-        <span class="n">sigmas</span><span class="o">=</span><span class="n">sigmas</span><span class="p">,</span>
+    <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
+        <span class="n">Panel</span><span class="p">(</span>
+            <span class="n">Text</span><span class="p">(</span><span class="s2">&quot;Hello from frac_blp!&quot;</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;bold magenta&quot;</span><span class="p">),</span>
+            <span class="n">border_style</span><span class="o">=</span><span class="s2">&quot;magenta&quot;</span><span class="p">,</span>
+            <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+        <span class="p">)</span>
     <span class="p">)</span>
-    <span class="n">print_stars</span><span class="p">(</span><span class="s2">&quot;Simulated Data:&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">simulated_frac_data</span><span class="p">)</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="n">simulated_config</span><span class="p">)</span>
+    <span class="n">simulated_frac_data</span> <span class="o">=</span> <span class="n">build_frac_data</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
+        <span class="n">Panel</span><span class="p">(</span>
+            <span class="n">Text</span><span class="p">(</span><span class="s2">&quot;Simulated data:&quot;</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">),</span>
+            <span class="n">border_style</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span>
+            <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
+        <span class="n">Panel</span><span class="p">(</span><span class="n">Text</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">simulated_frac_data</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()),</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dataset&quot;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="p">)</span>
 
-    <span class="n">print_stars</span><span class="p">(</span><span class="s2">&quot;Estimating with FRAC&quot;</span><span class="p">)</span>
-    <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">frac_nodemog_estimate</span><span class="p">(</span><span class="n">simulated_frac_data</span><span class="p">,</span> <span class="n">degree_Z</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">degree_X1</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="s2">&quot;Estimating with FRAC&quot;</span><span class="p">)</span>
+    <span class="n">est</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">estimation</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">nodemog_estimate</span><span class="p">(</span>
+        <span class="n">simulated_frac_data</span><span class="p">,</span>
+        <span class="n">degree_Z</span><span class="o">=</span><span class="n">est</span><span class="o">.</span><span class="n">degree_Z</span><span class="p">,</span>
+        <span class="n">degree_X1</span><span class="o">=</span><span class="n">est</span><span class="o">.</span><span class="n">degree_X1</span><span class="p">,</span>
+        <span class="n">optimal_instruments</span><span class="o">=</span><span class="n">est</span><span class="o">.</span><span class="n">optimal_instruments</span><span class="p">,</span>
+        <span class="n">run_projections</span><span class="o">=</span><span class="n">est</span><span class="o">.</span><span class="n">run_projections</span><span class="p">,</span>
+    <span class="p">)</span>
 
-    <span class="n">print_stars</span><span class="p">(</span><span class="s2">&quot;Example with the real data interface:&quot;</span><span class="p">)</span>
-    <span class="n">df_X1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span>
-            <span class="p">(</span>
-                <span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">X1_exo</span><span class="p">,</span>
-                <span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">X1_endo</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="p">),</span>
-        <span class="n">columns</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">names_X1</span><span class="p">,</span>
+    <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
+        <span class="n">Panel</span><span class="p">(</span>
+            <span class="n">Text</span><span class="p">(</span>
+                <span class="s2">&quot;Example with the real data interface:&quot;</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span>
+            <span class="p">),</span>
+            <span class="n">border_style</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span>
+            <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+        <span class="p">)</span>
     <span class="p">)</span>
-    <span class="n">real_frac_data</span> <span class="o">=</span> <span class="n">FracNoDemogRealData</span><span class="p">(</span>
-        <span class="n">T</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
-        <span class="n">J</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">J</span><span class="p">,</span>
-        <span class="n">df_X1</span><span class="o">=</span><span class="n">df_X1</span><span class="p">,</span>
-        <span class="n">Z</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">Z</span><span class="p">,</span>
-        <span class="n">names_X1_exo</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">names_X1_exo</span><span class="p">,</span>
-        <span class="n">names_X1_endo</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">names_X1_endo</span><span class="p">,</span>
-        <span class="n">names_X2_exo</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">names_X2_exo</span><span class="p">,</span>
-        <span class="n">names_X2_endo</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">names_X2_endo</span><span class="p">,</span>
-        <span class="n">shares</span><span class="o">=</span><span class="n">simulated_frac_data</span><span class="o">.</span><span class="n">shares</span><span class="p">,</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="n">real_config</span><span class="p">)</span>
+    <span class="n">real_frac_data</span> <span class="o">=</span> <span class="n">build_frac_data</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
+        <span class="n">Panel</span><span class="p">(</span><span class="n">Text</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">real_frac_data</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()),</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dataset&quot;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="p">)</span>
-    <span class="n">print_stars</span><span class="p">(</span><span class="s2">&quot;Estimating with FRAC&quot;</span><span class="p">)</span>
-    <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">frac_nodemog_estimate</span><span class="p">(</span><span class="n">real_frac_data</span><span class="p">,</span> <span class="n">degree_Z</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">degree_X1</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="s2">&quot;Estimating with FRAC&quot;</span><span class="p">)</span>
+    <span class="n">est</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">estimation</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">nodemog_estimate</span><span class="p">(</span>
+        <span class="n">real_frac_data</span><span class="p">,</span>
+        <span class="n">degree_Z</span><span class="o">=</span><span class="n">est</span><span class="o">.</span><span class="n">degree_Z</span><span class="p">,</span>
+        <span class="n">degree_X1</span><span class="o">=</span><span class="n">est</span><span class="o">.</span><span class="n">degree_X1</span><span class="p">,</span>
+        <span class="n">optimal_instruments</span><span class="o">=</span><span class="n">est</span><span class="o">.</span><span class="n">optimal_instruments</span><span class="p">,</span>
+        <span class="n">run_projections</span><span class="o">=</span><span class="n">est</span><span class="o">.</span><span class="n">run_projections</span><span class="p">,</span>
+    <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
