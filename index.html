@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="my Python utilities">
+        <meta name="description" content="FRAC (Salanie-Wolak) estimation of macro BLP models">
       
       
         <meta name="author" content="Bernard Salanie">
@@ -398,6 +398,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#running-the-program" class="md-nav__link">
+    <span class="md-ellipsis">
+      running the program
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#outputs" class="md-nav__link">
     <span class="md-ellipsis">
       outputs
@@ -420,6 +429,15 @@
   
     <nav class="md-nav" aria-label="Release notes">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#06-november-2-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.6 (November 2, 2026)
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#05-october-31-2026" class="md-nav__link">
@@ -699,12 +717,35 @@
   
   
     <li class="md-nav__item">
-      <a href="frac_nodemog.html" class="md-nav__link">
+      <a href="frac_nodemog_estimate.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     FRAC estimation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="frac_nodemog.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    main driver
     
   </span>
   
@@ -790,6 +831,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#running-the-program" class="md-nav__link">
+    <span class="md-ellipsis">
+      running the program
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#outputs" class="md-nav__link">
     <span class="md-ellipsis">
       outputs
@@ -812,6 +862,15 @@
   
     <nav class="md-nav" aria-label="Release notes">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#06-november-2-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.6 (November 2, 2026)
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#05-october-31-2026" class="md-nav__link">
@@ -966,6 +1025,11 @@ configuration file:
 $$
 \frac{(n_{1x}+1)(n_{1x}+2)}{2} \times \left(\frac{(n_{Z}+1)(n_{Z}+2)}{2}-1\right).
 $$</p>
+<h4 id="running-the-program">running the program<a class="headerlink" href="#running-the-program" title="Permanent link">&para;</a></h4>
+<p>After you download the package, <code>frac_nodemog --example</code> will run an example that both simulates and estimates a model.</p>
+<p>To run the estimation on your own data and configuration: create a <code>my_data.csv</code> (or Parquet) file; a <code>my_model_config.toml</code> configuration file that has <code>data="my_data.csv"</code>, and run
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>frac_nodemog my_model_config.toml
+</code></pre></div></td></tr></table></div></p>
 <h4 id="outputs">outputs<a class="headerlink" href="#outputs" title="Permanent link">&para;</a></h4>
 <p>The outputs are:</p>
 <ul>
@@ -975,6 +1039,8 @@ $$</p>
 </ul>
 <p>They are saved in the text file indicated as <code>results_file</code> in the configuration file. If no <code>results_file</code> is indicated, the results are written in <code>estimation_results.txt</code>.  Its path is relative to where the program was run.</p>
 <h3 id="release-notes">Release notes<a class="headerlink" href="#release-notes" title="Permanent link">&para;</a></h3>
+<h4 id="06-november-2-2026">0.6 (November 2, 2026)<a class="headerlink" href="#06-november-2-2026" title="Permanent link">&para;</a></h4>
+<p>Improved the printing and created the <code>frac_nodemog</code> script.</p>
 <h4 id="05-october-31-2026">0.5 (October 31, 2026)<a class="headerlink" href="#05-october-31-2026" title="Permanent link">&para;</a></h4>
 <p>Improved and accelerated. Uses a TOML configuration file for the parameters.</p>
 <h4 id="04-june-1-2026">0.4 (June 1, 2026)<a class="headerlink" href="#04-june-1-2026" title="Permanent link">&para;</a></h4>
